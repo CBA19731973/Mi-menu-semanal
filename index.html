@@ -1,119 +1,62 @@
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Mi Menú Semanal</title>
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#18212f"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg">
+<title>Mi Menú</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f5f6f8;color:#20242a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-header{background:#111827;color:#fff;padding:18px 16px;padding-top:calc(18px + env(safe-area-inset-top));position:sticky;top:0;z-index:5}header h1{margin:0;font-size:22px}header p{margin:5px 0 0;color:#cbd5e1;font-size:13px}
-nav{display:flex;gap:8px;padding:10px 12px;background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:78px;z-index:4;overflow-x:auto}nav button{border:0;background:#eef2f7;padding:11px 14px;border-radius:10px;white-space:nowrap;font-weight:700;color:#334155}nav button.active{background:#2563eb;color:#fff}
-main{max-width:1200px;margin:18px auto;padding:0 12px}.view{display:none}.view.active{display:block}.card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 1px 2px #00000008}
-h2{font-size:19px;margin:0 0 10px}.muted{color:#6b7280;font-size:13px}.row{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:9px;padding:10px 13px;background:#e5e7eb;font-weight:700;cursor:pointer}.btn.primary{background:#2563eb;color:#fff}.btn.danger{background:#fee2e2;color:#b91c1c}
-input,select,textarea{width:100%;border:1px solid #cbd5e1;border-radius:9px;padding:11px;font:inherit;background:#fff}textarea{min-height:100px;resize:vertical}label{display:block;font-size:13px;font-weight:700;margin:10px 0 5px}
-.weekwrap{overflow-x:auto}.grid{display:grid;grid-template-columns:repeat(7,160px);gap:8px;min-width:1130px}.day h3{font-size:14px;background:#111827;color:#fff;padding:9px;border-radius:9px;margin:0 0 7px;text-align:center}.day h3 span{font-weight:400;font-size:10px}.slot{border:1px solid #e5e7eb;border-radius:9px;padding:9px;margin-bottom:6px;background:#fafafa;cursor:pointer;min-height:49px}.slot:active{background:#eff6ff}.slot small{display:block;color:#6b7280;font-size:10px;text-transform:uppercase;margin-bottom:3px}.slot strong{font-size:12px}.empty{color:#9ca3af;font-style:italic}
-.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}.tag{display:inline-block;background:#eff6ff;color:#1d4ed8;border-radius:99px;padding:4px 8px;font-size:11px;font-weight:700}.recipe h3{margin:7px 0 4px}
-.ingredient-row{display:grid;grid-template-columns:1fr 90px 110px 42px;gap:6px;margin-bottom:7px;align-items:center}.ingredient-row .remove{padding:9px 8px}.shopping li{list-style:none;margin:8px 0;display:flex;gap:8px;align-items:center}.shopping{padding:0}.shopping input{width:auto}.shopping .section{font-weight:800;margin-top:14px;border-bottom:1px solid #e5e7eb;padding-bottom:5px}
-.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:14px;z-index:20}.modal.show{display:flex}.modalbox{background:#fff;border-radius:15px;max-width:720px;width:100%;max-height:94vh;overflow:auto;padding:18px}.hint{background:#eff6ff;border-radius:10px;padding:10px;font-size:12px;color:#1e40af;margin:8px 0}
-@media(max-width:600px){.ingredient-row{grid-template-columns:1fr 75px 95px 40px}.modalbox{padding:15px}}
-</style>
-</head>
-<body>
-<header><h1>🍽️ Mi Menú Semanal</h1><p>Planifica tu semana · guarda recetas · genera la compra</p></header>
-<nav>
-<button class="active" data-view="week">📅 Semana</button>
-<button data-view="recipes">📚 Recetas</button>
-<button data-view="shopping">🛒 Compra</button>
-</nav>
-<main>
-<section id="week" class="view active">
-<div class="card"><div class="row" style="justify-content:space-between;align-items:center"><div><h2>Plan semanal</h2><span class="muted">Toca cualquier casilla para asignar una receta.</span></div><button class="btn danger" onclick="clearWeek()">Vaciar semana</button></div></div>
-<div class="card weekwrap"><div class="grid" id="weekGrid"></div></div>
-</section>
-<section id="recipes" class="view">
-<div class="card"><div class="row" style="justify-content:space-between;align-items:center"><div><h2>Biblioteca de recetas</h2><span class="muted">Tú introduces las recetas, ingredientes y elaboración.</span></div><button class="btn primary" onclick="openRecipe()">+ Nueva receta</button></div></div>
-<div class="card"><input id="search" placeholder="Buscar receta..." oninput="renderRecipes()"></div>
-<div class="recipe-grid" id="recipeGrid"></div>
-</section>
-<section id="shopping" class="view">
-<div class="card"><h2>🛒 Lista de la compra</h2><p class="muted">Las cantidades se suman automáticamente cuando ingrediente y unidad coinciden.</p><div class="row"><button class="btn primary" onclick="generateShopping()">Actualizar</button><button class="btn" onclick="uncheckAll()">Desmarcar</button></div></div>
-<div class="card"><ul class="shopping" id="shoppingList"></ul></div>
-</section>
+*{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#20242a;font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:#18212f;color:white;padding:18px 15px}header h1{margin:0}header p{margin:4px 0;color:#cbd5e1;font-size:12px}
+nav{display:flex;gap:6px;padding:8px;background:white;overflow:auto;position:sticky;top:0;z-index:4}nav button{border:0;border-radius:9px;padding:10px;background:#eef2f7;font-weight:700;white-space:nowrap}nav button.on{background:#2563eb;color:white}
+main{max-width:1200px;margin:14px auto;padding:0 10px}.view{display:none}.view.on{display:block}.card{background:white;border:1px solid #e2e6eb;border-radius:14px;padding:14px;margin-bottom:10px}
+button{cursor:pointer}.primary{background:#2563eb;color:#fff;border:0;border-radius:9px;padding:10px 12px;font-weight:700}.danger{background:#fee2e2;color:#b91c1c;border:0;border-radius:9px;padding:10px 12px;font-weight:700}
+input,select,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:9px;font:inherit}label{font-size:12px;font-weight:700;display:block;margin:8px 0 4px}
+.week{overflow:auto}.days{display:grid;grid-template-columns:repeat(7,165px);gap:7px;min-width:1160px}.day h3{background:#18212f;color:#fff;border-radius:8px;padding:8px;text-align:center;font-size:13px}.slot{border:1px solid #e2e6eb;border-radius:8px;padding:8px;margin:5px 0;min-height:45px}.slot small{display:block;color:#6b7280;font-size:9px}.empty{color:#9ca3af;font-style:italic}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}.tag{background:#eff6ff;color:#1d4ed8;padding:4px 8px;border-radius:99px;font-size:11px;font-weight:700}
+.ing{display:grid;grid-template-columns:1fr 80px 100px 35px;gap:5px;margin:5px 0}.row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.muted{color:#687385;font-size:13px}.list{padding:0}.list li{list-style:none;padding:8px 0;border-bottom:1px solid #edf0f2}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:10;padding:12px;align-items:center;justify-content:center}.modal.show{display:flex}.box{background:#fff;border-radius:15px;padding:16px;width:100%;max-width:720px;max-height:94vh;overflow:auto}
+@media(max-width:600px){.ing{grid-template-columns:1fr 70px 90px 35px}}
+</style></head><body>
+<header><h1>🍲 Mi Menú</h1><p>Menús · recetas · congelador · compra · puntos</p></header>
+<nav id="nav"></nav><main>
+<section id="week" class="view on"><div class="card"><div class="row"><b>Semana actual</b><button class="primary" onclick="saveWeek()">💾 Guardar semana</button><button class="danger" onclick="week={} ,save()">Vaciar</button></div></div><div class="card week"><div id="days" class="days"></div></div></section>
+<section id="recipes" class="view"><div class="card"><div class="row"><b>Biblioteca de recetas</b><button class="primary" onclick="editRecipe()">+ Nueva receta</button></div></div><div class="card"><input id="search" placeholder="Buscar..." oninput="renderRecipes()"></div><div id="recipesList" class="cards"></div></section>
+<section id="freezer" class="view"><div class="card"><div class="row"><b>❄️ Congelador</b><button class="primary" onclick="addFrozen()">+ Añadir</button></div><p class="muted">Registra tuppers y número de comensales por tupper.</p></div><div id="freezerList" class="cards"></div></section>
+<section id="history" class="view"><div class="card"><b>🗂️ Semanas guardadas</b><p class="muted">Recupera semanas que hayan funcionado.</p></div><div id="historyList"></div></section>
+<section id="shopping" class="view"><div class="card"><b>🛒 Lista de la compra</b><p class="muted">Las cantidades compatibles se suman.</p><button class="primary" onclick="shopping()">Actualizar</button></div><div class="card"><ul id="shop" class="list"></ul></div></section>
+<section id="points" class="view"><div class="card"><b>🎯 Puntos</b><label>Puntos diarios permitidos</label><input id="budget" type="number" onchange="settings.budget=+this.value;save()"><label>Puntos de ejercicio de hoy</label><input id="exercise" type="number" onchange="settings.exercise=+this.value;save()"></div><div class="card" id="pointsTable"></div></section>
+<section id="settings" class="view"><div class="card"><b>☁️ Sincronización</b><p class="muted">Preparada para Supabase. Introduce después la URL y la clave pública de tu proyecto.</p><label>Supabase URL</label><input id="surl"><label>Supabase anon key</label><input id="skey"><button class="primary" onclick="saveCloud()">Guardar</button><p id="cloudMsg" class="muted"></p></div><div class="card"><b>💾 Copia de seguridad</b><button class="primary" onclick="exportData()">Exportar</button> <button onclick="document.getElementById('imp').click()">Importar</button><input id="imp" type="file" accept=".json" hidden onchange="importData(event)"></div></section>
 </main>
-
-<div class="modal" id="recipeModal"><div class="modalbox">
-<h2 id="modalTitle">Nueva receta</h2><input type="hidden" id="rid">
-<label>Nombre</label><input id="rname" placeholder="Ej. Lentejas">
-<label>Tipo de menú</label><select id="rtype"></select>
-<label>Personas de la receta</label><input id="rpeople" type="number" min="1" value="4">
-<label>Ingredientes</label>
-<div class="hint">Ejemplo: Cebolla · 2 · unidades. También puedes usar 400 · g, 1 · kg, 500 · ml, etc.</div>
-<div id="ingredients"></div>
-<button class="btn" onclick="addIngredient()">+ Añadir ingrediente</button>
-<label>Elaboración</label><textarea id="rsteps" placeholder="Escribe aquí cómo preparas la receta..."></textarea>
-<div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" onclick="closeRecipe()">Cancelar</button><button class="btn primary" onclick="saveRecipe()">Guardar receta</button></div>
-</div></div>
-
-<div class="modal" id="assignModal"><div class="modalbox">
-<h2>Asignar receta</h2><p id="assignInfo" class="muted"></p><select id="assignSelect"></select>
-<div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" onclick="closeAssign()">Cancelar</button><button class="btn primary" onclick="assignRecipe()">Asignar</button></div>
-</div></div>
-
+<div id="recipeModal" class="modal"><div class="box"><h2 id="rt">Nueva receta</h2><input id="rid" hidden><label>Nombre</label><input id="rn"><label>Tipo</label><select id="rtype"></select><label>Personas</label><input id="rp" type="number" value="4"><label>Ingredientes</label><div id="ings"></div><button onclick="addIng()">+ Ingrediente</button><label>Elaboración</label><textarea id="steps"></textarea><div class="row" style="margin-top:10px"><button class="primary" onclick="saveRecipe()">Guardar</button><button onclick="closeM()">Cancelar</button></div></div></div>
+<div id="assignModal" class="modal"><div class="box"><h2>Asignar receta</h2><p id="ai" class="muted"></p><select id="as"></select><div class="row" style="margin-top:10px"><button class="primary" onclick="assign()">Asignar</button><button onclick="closeAssign()">Cancelar</button></div></div></div>
 <script>
-const TYPES=["Guisos","Pasta","Cremas","Arroces","Verduras","Asados","Otros"];
-const DAYS=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-const SLOTS=["Desayuno","Media mañana 1","Media mañana 2","Comida","Merienda 1","Merienda 2","Cena","Before bed"];
-const DEFAULT_TYPES=["Guisos","Pasta","Cremas","Arroces","Verduras","Guisos","Asados"];
-let recipes=JSON.parse(localStorage.getItem("menu_recipes_v3")||"[]");
-let week=JSON.parse(localStorage.getItem("menu_week_v3")||"{}");
-let shopping=JSON.parse(localStorage.getItem("menu_shopping_v3")||"{}");
-let pending=null;
-
-function persist(){localStorage.setItem("menu_recipes_v3",JSON.stringify(recipes));localStorage.setItem("menu_week_v3",JSON.stringify(week));localStorage.setItem("menu_shopping_v3",JSON.stringify(shopping))}
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function renderWeek(){
- let out="";
- DAYS.forEach((d,di)=>{out+=`<div class="day"><h3>${d}<br><span>${DEFAULT_TYPES[di]} en comida</span></h3>`;
- SLOTS.forEach((slot,si)=>{let key=di+"_"+si,r=recipes.find(x=>x.id===week[key]);out+=`<div class="slot" onclick="openAssign('${key}')"><small>${slot}</small><strong class="${r?'':'empty'}">${r?esc(r.name):"Añadir receta…"}</strong></div>`});out+="</div>"});
- document.getElementById("weekGrid").innerHTML=out;
-}
-function renderRecipes(){
- let q=(document.getElementById("search")?.value||"").toLowerCase();
- let arr=recipes.filter(r=>(r.name+" "+r.type).toLowerCase().includes(q));
- document.getElementById("recipeGrid").innerHTML=arr.length?arr.map(r=>`<div class="card recipe"><span class="tag">${esc(r.type)}</span><h3>${esc(r.name)}</h3><div class="muted">${r.people} personas · ${r.ingredients.length} ingredientes</div><p class="muted">${r.ingredients.slice(0,3).map(i=>esc(i.name)+" "+i.qty+" "+esc(i.unit)).join(" · ")}${r.ingredients.length>3?"…":""}</p><div class="row"><button class="btn" onclick="openRecipe('${r.id}')">Editar</button><button class="btn danger" onclick="deleteRecipe('${r.id}')">Borrar</button></div></div>`).join(""):"<div class='card'><p>No hay recetas. Pulsa «Nueva receta».</p></div>";
-}
-function populateTypes(){document.getElementById("rtype").innerHTML=TYPES.map(x=>`<option>${x}</option>`).join("")}
-function addIngredient(data={name:"",qty:"",unit:"unidades"}){let d=document.createElement("div");d.className="ingredient-row";d.innerHTML=`<input class="iname" placeholder="Ingrediente" value="${esc(data.name)}"><input class="iqty" type="number" step="0.01" min="0" placeholder="Cantidad" value="${esc(data.qty)}"><select class="iunit"><option>unidades</option><option>g</option><option>kg</option><option>ml</option><option>l</option><option>docenas</option><option>cucharadas</option><option>cucharaditas</option></select><button class="btn remove" onclick="this.parentElement.remove()">×</button>`;d.querySelector(".iunit").value=data.unit||"unidades";document.getElementById("ingredients").appendChild(d)}
-function openRecipe(id){
-let r=recipes.find(x=>x.id===id);document.getElementById("rid").value=r?.id||"";document.getElementById("rname").value=r?.name||"";document.getElementById("rtype").value=r?.type||"Guisos";document.getElementById("rpeople").value=r?.people||4;document.getElementById("rsteps").value=r?.steps||"";document.getElementById("ingredients").innerHTML="";(r?.ingredients?.length?r.ingredients:[{}]).forEach(addIngredient);document.getElementById("modalTitle").textContent=r?"Editar receta":"Nueva receta";document.getElementById("recipeModal").classList.add("show")}
-function closeRecipe(){document.getElementById("recipeModal").classList.remove("show")}
-function saveRecipe(){
-let name=document.getElementById("rname").value.trim();if(!name)return alert("Escribe el nombre de la receta.");
-let ingredients=[...document.querySelectorAll(".ingredient-row")].map(x=>({name:x.querySelector(".iname").value.trim(),qty:parseFloat(x.querySelector(".iqty").value),unit:x.querySelector(".iunit").value})).filter(x=>x.name&&Number.isFinite(x.qty)&&x.qty>0);
-if(!ingredients.length)return alert("Añade al menos un ingrediente con cantidad.");
-let id=document.getElementById("rid").value||crypto.randomUUID(),r={id,name,type:document.getElementById("rtype").value,people:+document.getElementById("rpeople").value||1,ingredients,steps:document.getElementById("rsteps").value.trim()};
-let ix=recipes.findIndex(x=>x.id===id);if(ix>=0)recipes[ix]=r;else recipes.push(r);persist();closeRecipe();renderRecipes();renderWeek();generateShopping();
-}
-function deleteRecipe(id){if(confirm("¿Borrar esta receta?")){recipes=recipes.filter(r=>r.id!==id);Object.keys(week).forEach(k=>{if(week[k]===id)delete week[k]});persist();renderRecipes();renderWeek();generateShopping()}}
-function openAssign(key){
-pending=key;let [di,si]=key.split("_"),preferred=DEFAULT_TYPES[di],arr=recipes.filter(r=>si!=3||r.type===preferred),list=arr.length?arr:recipes;
-document.getElementById("assignInfo").textContent=`${DAYS[di]} · ${SLOTS[si]}${si==3?" · se muestran primero las recetas de "+preferred:""}`;
-document.getElementById("assignSelect").innerHTML=`<option value="">— Dejar vacío —</option>`+list.map(r=>`<option value="${r.id}">${esc(r.name)} · ${esc(r.type)}</option>`).join("");document.getElementById("assignSelect").value=week[key]||"";document.getElementById("assignModal").classList.add("show")}
-function closeAssign(){document.getElementById("assignModal").classList.remove("show")}
-function assignRecipe(){let v=document.getElementById("assignSelect").value;if(v)week[pending]=v;else delete week[pending];persist();closeAssign();renderWeek();generateShopping()}
-function clearWeek(){if(confirm("¿Vaciar toda la semana?")){week={};persist();renderWeek();generateShopping()}}
-function baseUnit(unit){if(unit==="kg")return["g",1000];if(unit==="g")return["g",1];if(unit==="l")return["ml",1000];if(unit==="ml")return["ml",1];if(unit==="docenas")return["unidades",12];return[unit,1]}
-function generateShopping(){
-let map={};
-Object.values(week).forEach(id=>{let r=recipes.find(x=>x.id===id);if(!r)return;r.ingredients.forEach(i=>{let name=i.name.trim().toLowerCase(),[u,f]=baseUnit(i.unit),key=name+"|"+u;let amount=i.qty*f;if(!map[key])map[key]={name:i.name,unit:u,qty:0,checked:shopping[key]?.checked||false};map[key].qty+=amount})});
-shopping=map;persist();renderShopping()}
-function niceQty(n){return Math.round(n*100)/100}
-function renderShopping(){let keys=Object.keys(shopping);document.getElementById("shoppingList").innerHTML=keys.length?keys.map(k=>`<li><input type="checkbox" ${shopping[k].checked?"checked":""} onchange="shopping[k].checked=this.checked;persist()"><span class="${shopping[k].checked?'muted':''}"><b>${esc(shopping[k].name)}</b> — ${niceQty(shopping[k].qty)} ${esc(shopping[k].unit)}</span></li>`).join(""):"<li class='muted'>No hay ingredientes todavía. Añade recetas a la semana.</li>"}
-function uncheckAll(){Object.values(shopping).forEach(x=>x.checked=false);persist();renderShopping()}
-document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));document.getElementById(b.dataset.view).classList.add("active");if(b.dataset.view==="shopping")renderShopping()}));
-populateTypes();renderWeek();renderRecipes();renderShopping();
-</script>
-</body>
-</html>
+const D=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"],S=["Desayuno","Media mañana 1","Media mañana 2","Comida","Merienda 1","Merienda 2","Cena","Before bed"],T=["Guisos","Pasta","Cremas","Arroces","Verduras","Asados","Otros"],DT=["Guisos","Pasta","Cremas","Arroces","Verduras","Guisos","Asados"];
+let x=JSON.parse(localStorage.getItem("menu4")||'{"recipes":[],"week":{},"history":[],"freezer":[],"settings":{"budget":22,"exercise":0}}'),recipes=x.recipes,week=x.week,history=x.history,freezer=x.freezer,settings=x.settings,pkey="";
+function save(){localStorage.setItem("menu4",JSON.stringify({recipes,week,history,freezer,settings}))}
+function esc(a){return String(a??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+nav.innerHTML=["week:📅 Semana","recipes:📚 Recetas","freezer:❄️ Congelador","history:🗂️ Semanas","shopping:🛒 Compra","points:🎯 Puntos","settings:⚙️ Datos"].map(a=>{let[z,n]=a.split(":");return `<button onclick="show('${z}')">${n}</button>`}).join("");
+function show(id){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==id));[...nav.children].forEach((b,i)=>b.classList.toggle("on",["week","recipes","freezer","history","shopping","points","settings"][i]==id));if(id=="shopping")shopping();if(id=="points")points();if(id=="freezer")renderFreezer();if(id=="history")renderHistory()}
+function renderWeek(){days.innerHTML=D.map((d,di)=>`<div class="day"><h3>${d}<br><small>${DT[di]}</small></h3>${S.map((s,si)=>{let r=recipes.find(r=>r.id==week[di+"_"+si]);return `<div class="slot" onclick="assignOpen('${di}_${si}')"><small>${s}</small><b class="${r?'':'empty'}">${r?esc(r.name):"Añadir…"}</b></div>`}).join("")}</div>`).join("")}
+function renderRecipes(){let q=(search.value||"").toLowerCase(),a=recipes.filter(r=>(r.name+r.type).toLowerCase().includes(q));recipesList.innerHTML=a.map(r=>`<div class="card"><span class="tag">${esc(r.type)}</span><h3>${esc(r.name)}</h3><p class="muted">${r.people} personas · ${r.ingredients.length} ingredientes</p><button onclick="editRecipe('${r.id}')">Editar</button> <button onclick="addFrozen('${r.id}')">❄️ Congelar</button></div>`).join("")||"<div class='card'>No hay recetas.</div>"}
+function editRecipe(id){let r=recipes.find(a=>a.id==id);rid.value=r?.id||"";rn.value=r?.name||"";rtype.innerHTML=T.map(t=>`<option>${t}</option>`).join("");rtype.value=r?.type||"Guisos";rp.value=r?.people||4;ings.innerHTML="";(r?.ingredients?.length?r.ingredients:[{}]).forEach(addIng);steps.value=r?.steps||"";rt.textContent=r?"Editar receta":"Nueva receta";recipeModal.classList.add("show")}
+function addIng(a={}){let e=document.createElement("div");e.className="ing";e.innerHTML=`<input class="in" placeholder="Ingrediente" value="${esc(a.name||"")}"><input class="iq" type="number" step=".01" value="${a.qty??""}"><select class="iu"><option>unidades</option><option>g</option><option>kg</option><option>ml</option><option>l</option><option>docenas</option></select><button onclick="this.parentElement.remove()">×</button>`;e.querySelector(".iu").value=a.unit||"unidades";ings.appendChild(e)}
+function saveRecipe(){let ing=[...document.querySelectorAll(".ing")].map(e=>({name:e.querySelector(".in").value.trim(),qty:+e.querySelector(".iq").value,unit:e.querySelector(".iu").value})).filter(a=>a.name&&a.qty>0);if(!rn.value||!ing.length)return alert("Falta nombre o ingredientes.");let r={id:rid.value||crypto.randomUUID(),name:rn.value.trim(),type:rtype.value,people:+rp.value||1,ingredients:ing,steps:steps.value};let i=recipes.findIndex(a=>a.id==r.id);i<0?recipes.push(r):recipes[i]=r;save();closeM();renderRecipes();renderWeek();shopping()}
+function closeM(){recipeModal.classList.remove("show")}
+function assignOpen(k){pkey=k;let [di,si]=k.split("_"),a=si==3?recipes.filter(r=>r.type==DT[di]):recipes;as.innerHTML="<option value=''>— Vacío —</option>"+(a.length?a:recipes).map(r=>`<option value="${r.id}">${esc(r.name)} · ${r.type}</option>`).join("");as.value=week[k]||"";ai.textContent=D[di]+" · "+S[si];assignModal.classList.add("show")}
+function closeAssign(){assignModal.classList.remove("show")}
+function assign(){as.value?week[pkey]=as.value:delete week[pkey];save();closeAssign();renderWeek();shopping()}
+function base(u){return u=="kg"?["g",1000]:u=="l"?["ml",1000]:u=="docenas"?["unidades",12]:[u,1]}
+function shopping(){let m={};Object.values(week).forEach(id=>{let r=recipes.find(a=>a.id==id);if(!r)return;r.ingredients.forEach(i=>{let [u,f]=base(i.unit),k=i.name.toLowerCase()+"|"+u;m[k]??={name:i.name,unit:u,qty:0};m[k].qty+=i.qty*f/r.people})});shop.innerHTML=Object.values(m).map(a=>`<li>☐ <b>${esc(a.name)}</b> — ${Math.round(a.qty*100)/100} ${a.unit}</li>`).join("")||"<li>No hay ingredientes.</li>"}
+function saveWeek(){let n=prompt("Nombre de la semana:",new Date().toLocaleDateString("es-ES"));if(n){history.unshift({id:crypto.randomUUID(),name:n,date:new Date().toISOString(),week:{...week}});save();renderHistory();alert("Semana guardada.")}}
+function renderHistory(){historyList.innerHTML=history.map(h=>`<div class="card"><b>${esc(h.name)}</b><p class="muted">${new Date(h.date).toLocaleDateString("es-ES")}</p><button onclick="loadWeek('${h.id}')">Recuperar</button></div>`).join("")||"<div class='card muted'>No hay semanas guardadas.</div>"}
+function loadWeek(id){let h=history.find(a=>a.id==id);if(h){week={...h.week};save();renderWeek();show("week")}}
+function addFrozen(id){frecipe.value=id||recipes[0]?.id||"";fcount.value=1;fservings.value=1;freezerModal.classList.add("show")}
+function saveFrozen(){freezer.push({id:crypto.randomUUID(),recipeId:frecipe.value,count:+fcount.value||1,servings:+fservings.value||1});save();closeFrozen();renderFreezer()}
+function closeFrozen(){freezerModal.classList.remove("show")}
+function renderFreezer(){freezerList.innerHTML=freezer.map(f=>{let r=recipes.find(a=>a.id==f.recipeId);return `<div class="card"><b>${esc(r?.name||"Receta")}</b><p>${f.count} tupper(s) · ${f.servings} comensal(es) por tupper</p><button onclick="removeFrozen('${f.id}')">Borrar</button></div>`}).join("")||"<div class='card muted'>No hay congelados.</div>";frecipe.innerHTML=recipes.map(r=>`<option value="${r.id}">${esc(r.name)}</option>`).join("")}
+function removeFrozen(id){freezer=freezer.filter(a=>a.id!=id);save();renderFreezer()}
+function points(){budget.value=settings.budget;exercise.value=settings.exercise;let rows=D.map((d,di)=>{let p=0;for(let si=0;si<S.length;si++){let r=recipes.find(a=>a.id==week[di+"_"+si]);if(r)r.ingredients.forEach(i=>{let [u,f]=base(i.unit);if(u=="g")p+=i.qty*f/r.people/50})}return `<tr><td>${d}</td><td>${p.toFixed(1)}</td><td>${settings.budget}</td><td>${di==(new Date().getDay()+6)%7?settings.exercise:0}</td></tr>`}).join("");pointsTable.innerHTML=`<table style="width:100%"><tr><th>Día</th><th>Alimentos*</th><th>Asignados</th><th>Ejercicio</th></tr>${rows}</table><p class="muted">*Estimación provisional. En la siguiente versión conectaremos el cálculo con la fórmula WW que quieras utilizar; no se presenta como cálculo oficial.</p>`}
+function saveCloud(){localStorage.setItem("supabase_url",surl.value);localStorage.setItem("supabase_key",skey.value);cloudMsg.textContent="Datos guardados. Falta crear/configurar el proyecto Supabase para activar la sincronización."}
+function exportData(){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([localStorage.getItem("menu4")],{type:"application/json"}));a.download="mi-menu-datos.json";a.click()}
+function importData(e){let f=e.target.files[0],r=new FileReader();r.onload=()=>{localStorage.setItem("menu4",r.result);location.reload()};r.readAsText(f)}
+recipeModal.insertAdjacentHTML("beforebegin",`<div id="freezerModal" class="modal"><div class="box"><h2>Añadir congelado</h2><label>Receta</label><select id="frecipe"></select><label>Número de tuppers</label><input id="fcount" type="number" value="1"><label>Comensales por tupper</label><input id="fservings" type="number" value="1"><div class="row" style="margin-top:10px"><button class="primary" onclick="saveFrozen()">Guardar</button><button onclick="closeFrozen()">Cancelar</button></div></div></div>`);
+renderWeek();renderRecipes();renderHistory();renderFreezer();
+</script></body></html>

@@ -1,0 +1,1 @@
+Mi Menú v4. Incluye PWA/icono propio, biblioteca de recetas, semanas guardadas, congelador, lista de compra y sección de puntos. schema.sql prepara una tabla Supabase para sincronización. La conexión cloud requiere crear el proyecto Supabase y configurar autenticación/RLS; no se inventan credenciales.

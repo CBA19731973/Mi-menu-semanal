@@ -1,0 +1,15 @@
+{
+  "name": "Mi Menú",
+  "short_name": "Mi Menú",
+  "start_url": "./",
+  "display": "standalone",
+  "theme_color": "#18212f",
+  "background_color": "#f4f6f8",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
