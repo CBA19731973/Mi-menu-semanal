@@ -1,6 +1,6 @@
 <!doctype html><html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#18212f"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg">
+<meta name="theme-color" content="#18212f"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <title>Mi Menú</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#20242a;font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -23,13 +23,14 @@ input,select,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-ra
 <section id="history" class="view"><div class="card"><b>🗂️ Semanas guardadas</b><p class="muted">Recupera semanas que hayan funcionado.</p></div><div id="historyList"></div></section>
 <section id="shopping" class="view"><div class="card"><b>🛒 Lista de la compra</b><p class="muted">Las cantidades compatibles se suman.</p><button class="primary" onclick="shopping()">Actualizar</button></div><div class="card"><ul id="shop" class="list"></ul></div></section>
 <section id="points" class="view"><div class="card"><b>🎯 Puntos</b><label>Puntos diarios permitidos</label><input id="budget" type="number" onchange="settings.budget=+this.value;save()"><label>Puntos de ejercicio de hoy</label><input id="exercise" type="number" onchange="settings.exercise=+this.value;save()"></div><div class="card" id="pointsTable"></div></section>
-<section id="settings" class="view"><div class="card"><b>☁️ Sincronización</b><p class="muted">Preparada para Supabase. Introduce después la URL y la clave pública de tu proyecto.</p><label>Supabase URL</label><input id="surl"><label>Supabase anon key</label><input id="skey"><button class="primary" onclick="saveCloud()">Guardar</button><p id="cloudMsg" class="muted"></p></div><div class="card"><b>💾 Copia de seguridad</b><button class="primary" onclick="exportData()">Exportar</button> <button onclick="document.getElementById('imp').click()">Importar</button><input id="imp" type="file" accept=".json" hidden onchange="importData(event)"></div></section>
+<section id="settings" class="view"><div class="card"><b>☁️ Sincronización</b><p class="muted">Conecta tu menú a Supabase para usar los mismos datos en el ordenador y el iPhone.</p><label>Supabase URL</label><input id="surl" autocomplete="off"><label>Supabase anon key / publishable key</label><input id="skey" type="password" autocomplete="off"><button class="primary" onclick="connectCloud()">Guardar y conectar</button><p id="cloudMsg" class="muted"></p><hr><b>👤 Cuenta</b><label>Correo electrónico</label><input id="email" type="email" autocomplete="email"><label>Contraseña</label><input id="password" type="password" autocomplete="current-password"><div class="row" style="margin-top:8px"><button class="primary" onclick="signInCloud()">Iniciar sesión</button><button onclick="signUpCloud()">Crear cuenta</button><button onclick="signOutCloud()">Cerrar sesión</button></div><p id="authMsg" class="muted"></p><button onclick="syncNow()">🔄 Sincronizar ahora</button></div><div class="card"><b>💾 Copia de seguridad</b><button class="primary" onclick="exportData()">Exportar</button> <button onclick="document.getElementById('imp').click()">Importar</button><input id="imp" type="file" accept=".json" hidden onchange="importData(event)"></div></section>
 </main>
 <div id="recipeModal" class="modal"><div class="box"><h2 id="rt">Nueva receta</h2><input id="rid" hidden><label>Nombre</label><input id="rn"><label>Tipo</label><select id="rtype"></select><label>Personas</label><input id="rp" type="number" value="4"><label>Ingredientes</label><div id="ings"></div><button onclick="addIng()">+ Ingrediente</button><label>Elaboración</label><textarea id="steps"></textarea><div class="row" style="margin-top:10px"><button class="primary" onclick="saveRecipe()">Guardar</button><button onclick="closeM()">Cancelar</button></div></div></div>
 <div id="assignModal" class="modal"><div class="box"><h2>Asignar receta</h2><p id="ai" class="muted"></p><select id="as"></select><div class="row" style="margin-top:10px"><button class="primary" onclick="assign()">Asignar</button><button onclick="closeAssign()">Cancelar</button></div></div></div>
 <script>
 const D=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"],S=["Desayuno","Media mañana 1","Media mañana 2","Comida","Merienda 1","Merienda 2","Cena","Before bed"],T=["Guisos","Pasta","Cremas","Arroces","Verduras","Asados","Otros"],DT=["Guisos","Pasta","Cremas","Arroces","Verduras","Guisos","Asados"];
 let x=JSON.parse(localStorage.getItem("menu4")||'{"recipes":[],"week":{},"history":[],"freezer":[],"settings":{"budget":22,"exercise":0}}'),recipes=x.recipes,week=x.week,history=x.history,freezer=x.freezer,settings=x.settings,pkey="";
+let supabaseClient=null, cloudUser=null;
 function save(){localStorage.setItem("menu4",JSON.stringify({recipes,week,history,freezer,settings}))}
 function esc(a){return String(a??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 nav.innerHTML=["week:📅 Semana","recipes:📚 Recetas","freezer:❄️ Congelador","history:🗂️ Semanas","shopping:🛒 Compra","points:🎯 Puntos","settings:⚙️ Datos"].map(a=>{let[z,n]=a.split(":");return `<button onclick="show('${z}')">${n}</button>`}).join("");
@@ -54,9 +55,68 @@ function closeFrozen(){freezerModal.classList.remove("show")}
 function renderFreezer(){freezerList.innerHTML=freezer.map(f=>{let r=recipes.find(a=>a.id==f.recipeId);return `<div class="card"><b>${esc(r?.name||"Receta")}</b><p>${f.count} tupper(s) · ${f.servings} comensal(es) por tupper</p><button onclick="removeFrozen('${f.id}')">Borrar</button></div>`}).join("")||"<div class='card muted'>No hay congelados.</div>";frecipe.innerHTML=recipes.map(r=>`<option value="${r.id}">${esc(r.name)}</option>`).join("")}
 function removeFrozen(id){freezer=freezer.filter(a=>a.id!=id);save();renderFreezer()}
 function points(){budget.value=settings.budget;exercise.value=settings.exercise;let rows=D.map((d,di)=>{let p=0;for(let si=0;si<S.length;si++){let r=recipes.find(a=>a.id==week[di+"_"+si]);if(r)r.ingredients.forEach(i=>{let [u,f]=base(i.unit);if(u=="g")p+=i.qty*f/r.people/50})}return `<tr><td>${d}</td><td>${p.toFixed(1)}</td><td>${settings.budget}</td><td>${di==(new Date().getDay()+6)%7?settings.exercise:0}</td></tr>`}).join("");pointsTable.innerHTML=`<table style="width:100%"><tr><th>Día</th><th>Alimentos*</th><th>Asignados</th><th>Ejercicio</th></tr>${rows}</table><p class="muted">*Estimación provisional. En la siguiente versión conectaremos el cálculo con la fórmula WW que quieras utilizar; no se presenta como cálculo oficial.</p>`}
-function saveCloud(){localStorage.setItem("supabase_url",surl.value);localStorage.setItem("supabase_key",skey.value);cloudMsg.textContent="Datos guardados. Falta crear/configurar el proyecto Supabase para activar la sincronización."}
+function cloudPayload(){return {recipes,week,history,freezer,settings}}
+function hasLocalData(){return recipes.length||Object.keys(week).length||history.length||freezer.length}
+function connectCloud(){
+  const url=surl.value.trim(), key=skey.value.trim();
+  if(!url||!key){cloudMsg.textContent="Falta la URL o la clave pública.";return}
+  localStorage.setItem("supabase_url",url); localStorage.setItem("supabase_key",key);
+  try{supabaseClient=supabase.createClient(url,key);cloudMsg.textContent="Conexión preparada. Ahora inicia sesión o crea tu cuenta.";}
+  catch(e){cloudMsg.textContent="No se pudo preparar la conexión: "+e.message}
+}
+async function signUpCloud(){
+  if(!supabaseClient){connectCloud(); if(!supabaseClient)return}
+  const email=emailEl().value.trim(), password=passwordEl().value;
+  if(!email||!password){authMsg.textContent="Escribe correo y contraseña.";return}
+  const {data,error}=await supabaseClient.auth.signUp({email,password});
+  if(error){authMsg.textContent="Error: "+error.message;return}
+  cloudUser=data.user; authMsg.textContent=data.session?"Cuenta creada y sesión iniciada.":"Cuenta creada. Si te pide confirmar el correo, hazlo y después inicia sesión.";
+  if(data.session) await syncNow();
+}
+async function signInCloud(){
+  if(!supabaseClient){connectCloud(); if(!supabaseClient)return}
+  const email=emailEl().value.trim(), password=passwordEl().value;
+  if(!email||!password){authMsg.textContent="Escribe correo y contraseña.";return}
+  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+  if(error){authMsg.textContent="Error: "+error.message;return}
+  cloudUser=data.user; authMsg.textContent="Sesión iniciada: "+cloudUser.email; await syncNow();
+}
+async function signOutCloud(){if(supabaseClient) await supabaseClient.auth.signOut();cloudUser=null;authMsg.textContent="Sesión cerrada."}
+function emailEl(){return document.getElementById("email")}
+function passwordEl(){return document.getElementById("password")}
+async function syncNow(){
+  if(!supabaseClient){connectCloud(); if(!supabaseClient)return}
+  const {data:{user},error:ue}=await supabaseClient.auth.getUser();
+  if(ue||!user){authMsg.textContent="Primero inicia sesión.";return}
+  cloudUser=user;
+  const {data,error}=await supabaseClient.from("app_data").select("payload,updated_at").eq("user_id",user.id).maybeSingle();
+  if(error){cloudMsg.textContent="Error al leer Supabase: "+error.message;return}
+  if(!data){
+    const {error:ie}=await supabaseClient.from("app_data").insert({user_id:user.id,payload:cloudPayload()});
+    if(ie){cloudMsg.textContent="Error al guardar en Supabase: "+ie.message;return}
+    cloudMsg.textContent="Sincronización activada. Tus datos locales se han subido a la nube.";
+  }else{
+    const remote=data.payload||{};
+    recipes=remote.recipes||[];week=remote.week||{};history=remote.history||[];freezer=remote.freezer||[];settings=remote.settings||{budget:22,exercise:0};
+    save(); renderWeek();renderRecipes();renderHistory();renderFreezer();initCloud();shopping();points();
+    cloudMsg.textContent="Datos descargados de la nube. Última actualización: "+new Date(data.updated_at).toLocaleString("es-ES");
+  }
+}
+async function pushCloud(){
+  if(!supabaseClient)return;
+  const {data:{user}}=await supabaseClient.auth.getUser(); if(!user)return;
+  const {error}=await supabaseClient.from("app_data").upsert({user_id:user.id,payload:cloudPayload(),updated_at:new Date().toISOString()},{onConflict:"user_id"});
+  if(error) cloudMsg.textContent="Error al sincronizar: "+error.message;
+  else cloudMsg.textContent="Sincronizado con la nube.";
+}
+const _save=save; save=function(){_save(); if(supabaseClient && cloudUser) pushCloud()}
+function initCloud(){
+  const u=localStorage.getItem("supabase_url"),k=localStorage.getItem("supabase_key");
+  if(u)surl.value=u;if(k)skey.value=k;
+  if(u&&k){try{supabaseClient=supabase.createClient(u,k);supabaseClient.auth.getUser().then(({data})=>{if(data.user){cloudUser=data.user;authMsg.textContent="Sesión activa: "+data.user.email;}})}catch(e){}}
+}
 function exportData(){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([localStorage.getItem("menu4")],{type:"application/json"}));a.download="mi-menu-datos.json";a.click()}
 function importData(e){let f=e.target.files[0],r=new FileReader();r.onload=()=>{localStorage.setItem("menu4",r.result);location.reload()};r.readAsText(f)}
 recipeModal.insertAdjacentHTML("beforebegin",`<div id="freezerModal" class="modal"><div class="box"><h2>Añadir congelado</h2><label>Receta</label><select id="frecipe"></select><label>Número de tuppers</label><input id="fcount" type="number" value="1"><label>Comensales por tupper</label><input id="fservings" type="number" value="1"><div class="row" style="margin-top:10px"><button class="primary" onclick="saveFrozen()">Guardar</button><button onclick="closeFrozen()">Cancelar</button></div></div></div>`);
-renderWeek();renderRecipes();renderHistory();renderFreezer();
+renderWeek();renderRecipes();renderHistory();renderFreezer();initCloud();
 </script></body></html>
