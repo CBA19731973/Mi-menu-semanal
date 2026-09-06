@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#18212f">
 <link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<title>Mi Menú V6</title>
+<title>Mi Menú V7</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#20242a;font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 header{background:#18212f;color:#fff;padding:16px 14px}header h1{margin:0}header p{margin:4px 0;color:#cbd5e1;font-size:12px}
@@ -26,11 +26,11 @@ table{border-collapse:collapse;width:100%}th,td{padding:7px;border-bottom:1px so
 </style>
 </head>
 <body>
-<header><h1>🍲 Mi Menú</h1><p>V6.4 · menú · alimentos · recetas · deporte · puntos clásicos</p></header>
-<nav id="nav"><button data-tab="week">📅 Semana</button><button data-tab="foods">🥕 Alimentos</button><button data-tab="recipes">📚 Recetas</button><button data-tab="freezer">❄️ Congelador</button><button data-tab="history">🗂️ Semanas</button><button data-tab="shopping">🛒 Compra</button><button data-tab="sport">🏃 Deporte</button><button data-tab="points">🎯 Puntos</button><button data-tab="settings">⚙️ Datos</button></nav>
+<header><h1>🍲 Mi Menú</h1><p>V7 · Carlos y Cris · menú · alimentos · recetas · deporte · puntos clásicos</p></header>
+<nav id="nav"><button data-tab="weekCarlos">📅 Semana Carlos</button><button data-tab="weekCris">📅 Semana Cris</button><button data-tab="foods">🥕 Alimentos</button><button data-tab="recipes">📚 Recetas</button><button data-tab="freezer">❄️ Congelador</button><button data-tab="history">🗂️ Semanas</button><button data-tab="shopping">🛒 Compra</button><button data-tab="sport">🏃 Deporte</button><button data-tab="pointsCarlos">🎯 Puntos Carlos</button><button data-tab="pointsCris">🎯 Puntos Cris</button><button data-tab="settings">⚙️ Datos</button></nav>
 <main>
 <section id="week" class="view on">
- <div class="card"><div class="row"><b>Semana: sábado → viernes</b><span id="weekLabel" class="muted"></span><button class="primary" onclick="saveWeek()">💾 Guardar semana</button><button class="danger" onclick="clearWeek()">Vaciar</button></div></div>
+ <div class="card"><div class="row"><b>Semana: <span id="profileName">Carlos</span> · sábado → viernes</b><span id="weekLabel" class="muted"></span><button class="primary" onclick="saveWeek()">💾 Guardar semana</button><button class="danger" onclick="clearWeek()">Vaciar</button></div></div>
  <div class="card week"><div id="days" class="days"></div></div>
  <div class="card" id="weekSummary"></div>
 </section>
@@ -61,7 +61,7 @@ table{border-collapse:collapse;width:100%}th,td{padding:7px;border-bottom:1px so
 </section>
 
 <section id="points" class="view">
- <div class="card"><b>🎯 Puntos WW clásicos</b>
+ <div class="card"><b>🎯 Puntos WW clásicos · <span id="pointsProfileName">Carlos</span></b>
  <div class="kpi">
   <div><div class="muted">Puntos diarios</div><div class="big" id="budgetKpi">0</div></div>
   <div><div class="muted">Banco acumulado</div><div class="big" id="bankKpi">0</div></div>
@@ -91,7 +91,7 @@ table{border-collapse:collapse;width:100%}th,td{padding:7px;border-bottom:1px so
 <script>
 // Compatibilidad: referencias explícitas a los elementos HTML (evita depender de globals por id).
 const $=id=>document.getElementById(id);
-const nav=$("nav"),weekLabel=$("weekLabel"),days=$("days"),weekSummary=$("weekSummary");
+const nav=$("nav"),weekLabel=$("weekLabel"),days=$("days"),weekSummary=$("weekSummary"),profileName=$("profileName"),pointsProfileName=$("pointsProfileName");
 const foodCat=$("foodCat"),foodSearch=$("foodSearch"),foodsList=$("foodsList"),fcat=$("fcat"),fn=$("fn"),fk=$("fk"),ff=$("ff"),ffi=$("ffi"),fd=$("fd"),fu=$("fu"),fid=$("fid"),foodModal=$("foodModal"),ft=$("ft");
 const recipeCat=$("recipeCat"),search=$("search"),recipesList=$("recipesList"),rtype=$("rtype"),rn=$("rn"),rp=$("rp"),rid=$("rid"),ings=$("ings"),steps=$("steps"),recipeModal=$("recipeModal"),rt=$("rt");
 const freezerList=$("freezerList"),historyList=$("historyList"),shop=$("shop");
@@ -114,46 +114,58 @@ let raw={};
 try{raw=JSON.parse(localStorage.getItem("menu4")||"{}")}catch(e){raw={};}
 let state=null;
 try{state=JSON.parse(localStorage.getItem("menu6")||"null")}catch(e){state=null;}
+const defaultSports=[
+  {id:"walk",name:"Caminar",cat:"Caminar",points30:1},{id:"treadmill",name:"Cinta",cat:"Cardio",points30:2},{id:"bike",name:"Bicicleta estática",cat:"Cardio",points30:2},{id:"elliptical",name:"Elíptica",cat:"Cardio",points30:2},{id:"strength",name:"Entrenamiento de fuerza",cat:"Gimnasio",points30:2},{id:"circuit",name:"Circuito de gimnasio",cat:"Gimnasio",points30:2},{id:"homecardio",name:"Cardio en casa",cat:"Cardio",points30:2}
+];
+function clone(x){return JSON.parse(JSON.stringify(x));}
+function makeProfile(base){return {week:clone(base?.week||{}),history:clone(base?.history||[]),freezer:clone(base?.freezer||[]),settings:{budget:+(base?.settings?.budget||22),bank:+(base?.settings?.bank||0),bankUsed:0,weekKey:null,weekBankStart:0,bankUse:[0,0,0,0,0,0,0]}}}
 if(!state){
-  state={recipes:[],week:{},history:[],freezer:[],foods:SEED,sports:[
-    {id:"walk",name:"Caminar",cat:"Caminar",points30:1},
-    {id:"treadmill",name:"Cinta",cat:"Cardio",points30:2},
-    {id:"bike",name:"Bicicleta estática",cat:"Cardio",points30:2},
-    {id:"elliptical",name:"Elíptica",cat:"Cardio",points30:2},
-    {id:"strength",name:"Entrenamiento de fuerza",cat:"Gimnasio",points30:2},
-    {id:"circuit",name:"Circuito de gimnasio",cat:"Gimnasio",points30:2},
-    {id:"homecardio",name:"Cardio en casa",cat:"Cardio",points30:2}
-  ],settings:{budget:(raw.settings&&raw.settings.budget)||22,bank:0,bankUsed:0,weekKey:null,weekBankStart:0,bankUse:[0,0,0,0,0,0,0]}};
-  // Migrate legacy recipes without losing them. Ingredients are matched to the seed where possible.
-  (raw.recipes||[]).forEach(r=>{
-    state.recipes.push({...r,id:r.id||crypto.randomUUID(),ingredients:(r.ingredients||[]).map(i=>{
-      let f=state.foods.find(a=>a.name.toLowerCase()===String(i.name||"").toLowerCase());
-      return {foodId:f?.id||null,name:i.name,qty:i.qty,unit:i.unit};
-    })});
-  });
-  state.week={...(raw.week||{})};
-  state.history=[...(raw.history||[])];
-  state.freezer=[...(raw.freezer||[])];
-  localStorage.setItem("menu6",JSON.stringify(state));
+  state={version:7,recipes:[],foods:SEED,sports:clone(defaultSports),profiles:{Carlos:makeProfile({settings:{budget:(raw.settings&&raw.settings.budget)||22},week:raw.week,history:raw.history,freezer:raw.freezer}),Cris:null}};
+  (raw.recipes||[]).forEach(r=>{state.recipes.push({...r,id:r.id||crypto.randomUUID(),ingredients:(r.ingredients||[]).map(i=>{let f=state.foods.find(a=>a.name.toLowerCase()===String(i.name||"").toLowerCase());return {foodId:f?.id||null,name:i.name,qty:i.qty,unit:i.unit}})});});
+  state.profiles.Cris=makeProfile(state.profiles.Carlos);
+  state.activeProfile="Carlos";
+}else{
+  // Migrate V6/V6.4 single-profile data to Carlos + an initial copy for Cris.
+  if(!state.profiles){
+    const old={week:state.week||{},history:state.history||[],freezer:state.freezer||[],settings:state.settings||{}};
+    state.profiles={Carlos:makeProfile(old),Cris:makeProfile(old)};
+    state.profiles.Carlos.settings={...state.profiles.Carlos.settings,...old.settings};
+    state.profiles.Cris.settings={...state.profiles.Cris.settings,...old.settings};
+    delete state.week;delete state.history;delete state.freezer;delete state.settings;
+  }
+  state.profiles.Carlos=state.profiles.Carlos||makeProfile({});
+  state.profiles.Cris=state.profiles.Cris||makeProfile(state.profiles.Carlos);
+  state.recipes=Array.isArray(state.recipes)?state.recipes:[];
+  state.foods=Array.isArray(state.foods)&&state.foods.length?state.foods:SEED.slice();
+  state.sports=Array.isArray(state.sports)&&state.sports.length?state.sports:clone(defaultSports);
+  state.activeProfile=state.activeProfile==="Cris"?"Cris":"Carlos";
 }
-state=state||{};
-state.recipes=Array.isArray(state.recipes)?state.recipes:[];
-state.week=state.week&&typeof state.week==="object"?state.week:{};
-state.history=Array.isArray(state.history)?state.history:[];
-state.freezer=Array.isArray(state.freezer)?state.freezer:[];
-state.foods=Array.isArray(state.foods)&&state.foods.length?state.foods:SEED.slice();
-state.sports=Array.isArray(state.sports)?state.sports:[{id:"walk",name:"Caminar",cat:"Caminar",points30:1},{id:"treadmill",name:"Cinta",cat:"Cardio",points30:2},{id:"bike",name:"Bicicleta estática",cat:"Cardio",points30:2},{id:"elliptical",name:"Elíptica",cat:"Cardio",points30:2},{id:"strength",name:"Entrenamiento de fuerza",cat:"Gimnasio",points30:2},{id:"circuit",name:"Circuito de gimnasio",cat:"Gimnasio",points30:2},{id:"homecardio",name:"Cardio en casa",cat:"Cardio",points30:2}];
-state.settings={budget:22,bank:0,bankUsed:0,weekKey:null,weekBankStart:0,bankUse:[0,0,0,0,0,0,0],...(state.settings||{})};
-state.settings.bankUse=Array.isArray(state.settings.bankUse)?state.settings.bankUse:[0,0,0,0,0,0,0];
-let recipes=state.recipes,week=state.week,menuHistory=state.history,freezer=state.freezer,foods=state.foods,sports=state.sports,settings=state.settings;
+state.version=7;
+function normalizeProfile(p){p=p||makeProfile({});p.week=p.week&&typeof p.week==="object"?p.week:{};p.history=Array.isArray(p.history)?p.history:[];p.freezer=Array.isArray(p.freezer)?p.freezer:[];p.settings={budget:22,bank:0,bankUsed:0,weekKey:null,weekBankStart:0,bankUse:[0,0,0,0,0,0,0],...(p.settings||{})};p.settings.bankUse=Array.isArray(p.settings.bankUse)?p.settings.bankUse:[0,0,0,0,0,0,0];return p}
+state.profiles.Carlos=normalizeProfile(state.profiles.Carlos);state.profiles.Cris=normalizeProfile(state.profiles.Cris);
+let activeProfile=state.activeProfile||"Carlos";
+let profile=state.profiles[activeProfile];
+let recipes=state.recipes,week=profile.week,menuHistory=profile.history,freezer=profile.freezer,foods=state.foods,sports=state.sports,settings=profile.settings;
 let supabaseClient=null,cloudUser=null,pkey="";
-
-function save(){state={recipes,week,history:menuHistory,freezer,foods,sports,settings};localStorage.setItem("menu6",JSON.stringify(state));if(supabaseClient&&cloudUser)pushCloud()}
+function selectProfile(name,copyIfNew=true){
+  name=name==="Cris"?"Cris":"Carlos";
+  if(name!=="Carlos"&&copyIfNew){
+    const ck=currentWeekKey();
+    if(!state.profiles.Cris.weekKeyForCopy||state.profiles.Cris.weekKeyForCopy!==ck){
+      state.profiles.Cris.week=clone(state.profiles.Carlos.week||{});
+      state.profiles.Cris.weekKeyForCopy=ck;
+    }
+  }
+  activeProfile=name;state.activeProfile=name;profile=state.profiles[name];
+  week=profile.week;menuHistory=profile.history;freezer=profile.freezer;settings=profile.settings;
+  profileName.textContent=name;pointsProfileName.textContent=name;
+  save();renderAll();
+}
 function esc(a){return String(a??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 function norm(a){return String(a||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()}
 function alpha(a,b){return String(a).localeCompare(String(b),"es",{sensitivity:"base"})}
 nav.querySelectorAll("button[data-tab]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.tab)));
-function show(id){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===id));[...nav.children].forEach((b,i)=>b.classList.toggle("on",["week","foods","recipes","freezer","history","shopping","sport","points","settings"][i]===id));if(id==="shopping")shopping();if(id==="points")points();if(id==="freezer")renderFreezer();if(id==="history")renderHistory();if(id==="foods")renderFoods();if(id==="recipes")renderRecipes();if(id==="sport")renderSports()}
+function show(id){let base=id;if(id==="weekCarlos"||id==="pointsCarlos"){selectProfile("Carlos");base=id.startsWith("week")?"week":"points"}else if(id==="weekCris"||id==="pointsCris"){selectProfile("Cris");base=id.startsWith("week")?"week":"points"}document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===base));nav.querySelectorAll("button[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===id));if(base==="shopping")shopping();if(base==="points")points();if(base==="freezer")renderFreezer();if(base==="history")renderHistory();if(base==="foods")renderFoods();if(base==="recipes")renderRecipes();if(base==="sport")renderSports()}
 function currentWeekKey(){let now=new Date(),day=now.getDay();let diff=(day===6)?0:day+1;let d=new Date(now);d.setHours(0,0,0,0);d.setDate(d.getDate()-diff);return d.toISOString().slice(0,10)}
 function weekDates(){let k=currentWeekKey(),d=new Date(k+"T00:00:00");return D.map((_,i)=>{let x=new Date(d);x.setDate(d.getDate()+i);return x})}
 function renderWeek(){let dates=weekDates();weekLabel.textContent=dates[0].toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit"})+" → "+dates[6].toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"});
@@ -261,32 +273,30 @@ function setBankUse(di,val){
   points();
 }
 function points(){
-  defaultBankResetIfNeeded();
-  recomputeBank();
-  budgetKpi.textContent=settings.budget;
-  bankKpi.textContent=settings.bank;
-  bankUsedKpi.textContent=(settings.bankUsed||0)+"/10";
+  defaultBankResetIfNeeded();recomputeBank();
+  budgetKpi.textContent=settings.budget;bankKpi.textContent=settings.bank;bankUsedKpi.textContent=(settings.bankUsed||0)+"/10";
+  profileName.textContent=activeProfile;pointsProfileName.textContent=activeProfile;
   let rows=D.map((d,di)=>{
     let food=dayFoodPoints(di),sport=daySportPoints(di),use=+(settings.bankUse||[])[di]||0;
-    let before=settings.budget+sport-food;
-    let balance=before+use;
-    let saved=Math.max(0,Math.min(4,before));
-    return `<tr><td><b>${d}</b></td><td>${settings.budget.toFixed(0)}</td><td>${Math.round(sport)}</td><td><input type="number" min="0" max="10" step="1" value="${use}" onchange="setBankUse(${di},this.value)" style="width:70px"></td><td>${Math.round(food)}</td><td class="${balance>=0?'ok':'bad'}">${Math.round(balance)}</td><td>${Math.round(saved)}</td></tr>`
+    let partial=settings.budget+sport+use;
+    let balance=partial-food;
+    let saved=Math.max(0,Math.min(4,balance));
+    return `<tr><td><b>${d}</b></td><td>${Math.round(settings.budget)}</td><td>${Math.round(sport)}</td><td><input type="number" min="0" max="10" step="1" value="${use}" onchange="setBankUse(${di},this.value)" style="width:70px"></td><td>${Math.round(partial)}</td><td>${Math.round(food)}</td><td class="${balance>=0?'ok':'bad'}">${Math.round(balance)}</td><td>${Math.round(saved)}</td></tr>`
   }).join("");
-  pointsTable.innerHTML=`<table><tr><th>Día</th><th>Permitidos</th><th>Deporte</th><th>Banco usado</th><th>Consumidos</th><th>Saldo</th><th>Ahorro</th></tr>${rows}</table>
-  <p class="muted">Banco: máximo 15 puntos acumulados. Se pueden ahorrar hasta 4 puntos por día. Se pueden gastar hasta 10 puntos del banco durante la semana sábado → viernes. El banco sobrante se arrastra a la semana siguiente.</p>`;
+  pointsTable.innerHTML=`<table><tr><th>Día</th><th>Permitidos</th><th>Deporte</th><th>Banco usado</th><th>Disponible parcial</th><th>Consumidos</th><th>Saldo</th><th>Ahorro</th></tr>${rows}</table>
+  <p class="muted">“Disponible parcial” suma los puntos diarios permitidos, el bonus de deporte y los puntos del banco usados ese día, antes de enfrentarlos a los consumidos. Banco: máximo 15 puntos acumulados; ahorro máximo 4 al día; gasto máximo 10 por semana sábado → viernes; el banco sobrante se arrastra.</p>`;
   renderWeek();
 }
 function renderSports(){let q=norm(sportSearch.value),a=sports.filter(s=>!q||norm(s.name).includes(q)||norm(s.cat).includes(q)).sort((x,y)=>alpha(x.cat,y.cat)||alpha(x.name,y.name));sportsList.innerHTML=a.map(s=>`<div class="card"><span class="tag">${esc(s.cat)}</span><h3>${esc(s.name)}</h3><p><b>${Math.round(s.points30)} puntos / 30 min</b></p><button onclick="editSport('${s.id}')">Editar</button></div>`).join("")}
 function editSport(id){let s=sports.find(a=>a.id===id);sid.value=s?.id||"";sn.value=s?.name||"";scat.value=s?.cat||"Cardio";sp.value=s?.points30??2;st.textContent=s?"Editar actividad":"Nueva actividad";sportModal.classList.add("show")}
 function saveSport(){if(!sn.value.trim())return;let s={id:sid.value||crypto.randomUUID(),name:sn.value.trim(),cat:scat.value,points30:+sp.value||0};let i=sports.findIndex(a=>a.id===s.id);i<0?sports.push(s):sports[i]=s;save();closeSport();renderSports();renderWeek()}
 function closeSport(){sportModal.classList.remove("show")}
-function cloudPayload(){return {version:6,recipes,week,history:menuHistory,freezer,foods,sports,settings}}
+function cloudPayload(){return {version:7,recipes:state.recipes,foods:state.foods,sports:state.sports,profiles:state.profiles,activeProfile:state.activeProfile}}
 function connectCloud(){let url=surl.value.trim(),key=skey.value.trim();if(!url||!key){cloudMsg.textContent="Falta la URL o la clave pública.";return}localStorage.setItem("supabase_url",url);localStorage.setItem("supabase_key",key);try{supabaseClient=supabase.createClient(url,key);cloudMsg.textContent="Conexión preparada. Ahora inicia sesión o sincroniza."}catch(e){cloudMsg.textContent="No se pudo preparar la conexión: "+e.message}}
 async function signUpCloud(){if(!supabaseClient){connectCloud();if(!supabaseClient)return}let e=email.value.trim(),p=password.value;if(!e||!p){authMsg.textContent="Escribe correo y contraseña.";return}let {data,error}=await supabaseClient.auth.signUp({email:e,password:p});if(error){authMsg.textContent="Error: "+error.message;return}cloudUser=data.user;authMsg.textContent=data.session?"Cuenta creada y sesión iniciada.":"Cuenta creada. Confirma el correo y después inicia sesión.";if(data.session)await syncNow()}
 async function signInCloud(){if(!supabaseClient){connectCloud();if(!supabaseClient)return}let e=email.value.trim(),p=password.value;if(!e||!p){authMsg.textContent="Escribe correo y contraseña.";return}let {data,error}=await supabaseClient.auth.signInWithPassword({email:e,password:p});if(error){authMsg.textContent="Error: "+error.message;return}cloudUser=data.user;authMsg.textContent="Sesión iniciada: "+cloudUser.email;await syncNow()}
 async function signOutCloud(){if(supabaseClient)await supabaseClient.auth.signOut();cloudUser=null;authMsg.textContent="Sesión cerrada."}
-async function syncNow(){if(!supabaseClient){connectCloud();if(!supabaseClient)return}let {data:{user},error:ue}=await supabaseClient.auth.getUser();if(ue||!user){authMsg.textContent="Primero inicia sesión.";return}cloudUser=user;let {data,error}=await supabaseClient.from("app_data").select("payload,updated_at").eq("user_id",user.id).maybeSingle();if(error){cloudMsg.textContent="Error al leer Supabase: "+error.message;return}if(!data){let {error:ie}=await supabaseClient.from("app_data").insert({user_id:user.id,payload:cloudPayload()});if(ie){cloudMsg.textContent="Error al guardar en Supabase: "+ie.message;return}cloudMsg.textContent="Sincronización activada. Tus datos locales se han subido a la nube."}else{let r=data.payload||{};recipes=r.recipes||recipes;week=r.week||week;menuHistory=r.history||menuHistory;freezer=r.freezer||freezer;foods=r.foods?.length?r.foods:foods;sports=r.sports?.length?r.sports:sports;settings={...settings,...(r.settings||{})};save();renderAll();cloudMsg.textContent="Datos descargados de la nube. Última actualización: "+new Date(data.updated_at).toLocaleString("es-ES")}}
+async function syncNow(){if(!supabaseClient){connectCloud();if(!supabaseClient)return}let {data:{user},error:ue}=await supabaseClient.auth.getUser();if(ue||!user){authMsg.textContent="Primero inicia sesión.";return}cloudUser=user;let {data,error}=await supabaseClient.from("app_data").select("payload,updated_at").eq("user_id",user.id).maybeSingle();if(error){cloudMsg.textContent="Error al leer Supabase: "+error.message;return}if(!data){let {error:ie}=await supabaseClient.from("app_data").insert({user_id:user.id,payload:cloudPayload()});if(ie){cloudMsg.textContent="Error al guardar en Supabase: "+ie.message;return}cloudMsg.textContent="Sincronización activada. Tus datos locales se han subido a la nube."}else{let r=data.payload||{};if(r.profiles){state.profiles=r.profiles;state.profiles.Carlos=normalizeProfile(state.profiles.Carlos);state.profiles.Cris=normalizeProfile(state.profiles.Cris);state.activeProfile=r.activeProfile==="Cris"?"Cris":"Carlos";activeProfile=state.activeProfile;profile=state.profiles[activeProfile];week=profile.week;menuHistory=profile.history;freezer=profile.freezer;settings=profile.settings} else {week=r.week||week;menuHistory=r.history||menuHistory;freezer=r.freezer||freezer;settings={...settings,...(r.settings||{})}}recipes=r.recipes||recipes;foods=r.foods?.length?r.foods:foods;sports=r.sports?.length?r.sports:sports;save();renderAll();cloudMsg.textContent="Datos descargados de la nube. Última actualización: "+new Date(data.updated_at).toLocaleString("es-ES")}}
 async function pushCloud(){if(!supabaseClient)return;let {data:{user}}=await supabaseClient.auth.getUser();if(!user)return;let {error}=await supabaseClient.from("app_data").upsert({user_id:user.id,payload:cloudPayload(),updated_at:new Date().toISOString()},{onConflict:"user_id"});if(error)cloudMsg.textContent="Error al sincronizar: "+error.message;else cloudMsg.textContent="Sincronizado con la nube."}
 function initCloud(){let u=localStorage.getItem("supabase_url"),k=localStorage.getItem("supabase_key");if(u)surl.value=u;if(k)skey.value=k;if(u&&k){try{supabaseClient=supabase.createClient(u,k);supabaseClient.auth.getUser().then(({data})=>{if(data.user){cloudUser=data.user;authMsg.textContent="Sesión activa: "+data.user.email}})}catch(e){}}}
 function exportData(){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));a.download="mi-menu-v6-datos.json";a.click()}
@@ -294,6 +304,6 @@ function importData(e){let f=e.target.files[0],r=new FileReader();r.onload=()=>{
 function renderAll(){populateCats();renderWeek();renderFoods();renderRecipes();renderHistory();renderFreezer();renderSports();shopping();points()}
 document.body.insertAdjacentHTML("beforeend",`<div id="freezerModal" class="modal"><div class="box"><h2>Añadir congelado</h2><label>Receta</label><select id="frecipe"></select><label>Número de tuppers</label><input id="fcount" type="number" value="1"><label>Comensales por tupper</label><input id="fservings" type="number" value="1"><div class="row" style="margin-top:10px"><button class="primary" onclick="saveFrozen()">Guardar</button><button onclick="closeFrozen()">Cancelar</button></div></div></div>`);
 freezerModal=$("freezerModal");frecipe=$("frecipe");fcount=$("fcount");fservings=$("fservings");
-try{populateCats();renderAll();initCloud();}catch(e){console.error(e);document.body.insertAdjacentHTML("beforeend",`<div style="position:fixed;left:10px;right:10px;bottom:10px;background:#fee2e2;color:#991b1b;padding:12px;border-radius:10px;z-index:9999"><b>Error de la aplicación:</b> ${esc(e&&e.message||e)}</div>`);}
+try{populateCats();profileName.textContent=activeProfile;pointsProfileName.textContent=activeProfile;renderAll();initCloud();}catch(e){console.error(e);document.body.insertAdjacentHTML("beforeend",`<div style="position:fixed;left:10px;right:10px;bottom:10px;background:#fee2e2;color:#991b1b;padding:12px;border-radius:10px;z-index:9999"><b>Error de la aplicación:</b> ${esc(e&&e.message||e)}</div>`);}
 </script>
 </body></html>
