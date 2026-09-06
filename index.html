@@ -89,6 +89,18 @@ table{border-collapse:collapse;width:100%}th,td{padding:7px;border-bottom:1px so
 <div id="assignModal" class="modal"><div class="box"><h2 id="assignTitle">Asignar</h2><p id="ai" class="muted"></p><select id="as"></select><div class="row" style="margin-top:10px"><button class="primary" onclick="assign()">Asignar</button><button onclick="closeAssign()">Cancelar</button></div></div></div>
 
 <script>
+// Compatibilidad: referencias explícitas a los elementos HTML (evita depender de globals por id).
+const $=id=>document.getElementById(id);
+const nav=$("nav"),weekLabel=$("weekLabel"),days=$("days"),weekSummary=$("weekSummary");
+const foodCat=$("foodCat"),foodSearch=$("foodSearch"),foodsList=$("foodsList"),fcat=$("fcat"),fn=$("fn"),fk=$("fk"),ff=$("ff"),ffi=$("ffi"),fd=$("fd"),fu=$("fu"),fid=$("fid"),foodModal=$("foodModal"),ft=$("ft");
+const recipeCat=$("recipeCat"),search=$("search"),recipesList=$("recipesList"),rtype=$("rtype"),rn=$("rn"),rp=$("rp"),rid=$("rid"),ings=$("ings"),steps=$("steps"),recipeModal=$("recipeModal"),rt=$("rt");
+const freezerList=$("freezerList"),historyList=$("historyList"),shop=$("shop");
+const sportSearch=$("sportSearch"),sportsList=$("sportsList"),scat=$("scat"),sn=$("sn"),sp=$("sp"),sid=$("sid"),sportModal=$("sportModal"),st=$("st");
+const budgetKpi=$("budgetKpi"),bankKpi=$("bankKpi"),bankUsedKpi=$("bankUsedKpi"),budget=$("budget"),pointsTable=$("pointsTable");
+const surl=$("surl"),skey=$("skey"),cloudMsg=$("cloudMsg"),email=$("email"),password=$("password"),authMsg=$("authMsg");
+const assignModal=$("assignModal"),assignTitle=$("assignTitle"),ai=$("ai"),as=$("as");
+const imp=$("imp");
+const pkeyInput=null;
 const D=["Sábado","Domingo","Lunes","Martes","Miércoles","Jueves","Viernes"];
 const S=["Desayuno","Media mañana 1","Media mañana 2","Comida","Merienda","Cena","Antes de dormir","Deporte"];
 const MEALC=["Guisos","Pasta","Cremas","Arroces","Verduras","Asados","Otros"];
