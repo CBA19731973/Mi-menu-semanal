@@ -26,7 +26,7 @@ table{border-collapse:collapse;width:100%}th,td{padding:7px;border-bottom:1px so
 </style>
 </head>
 <body>
-<header><h1>🍲 Mi Menú</h1><p>V6 · menú · alimentos · recetas · deporte · puntos clásicos</p></header>
+<header><h1>🍲 Mi Menú</h1><p>V6.1 · menú · alimentos · recetas · deporte · puntos clásicos</p></header>
 <nav id="nav"></nav>
 <main>
 <section id="week" class="view on">
@@ -132,7 +132,7 @@ if(!state){
   state.week={...(raw.week||{})};
   state.history=[...(raw.history||[])];
   state.freezer=[...(raw.freezer||[])];
-  save();
+  localStorage.setItem("menu6",JSON.stringify(state));
 }
 state=state||{};
 state.recipes=Array.isArray(state.recipes)?state.recipes:[];
