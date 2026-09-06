@@ -100,6 +100,7 @@ const budgetKpi=$("budgetKpi"),bankKpi=$("bankKpi"),bankUsedKpi=$("bankUsedKpi")
 const surl=$("surl"),skey=$("skey"),cloudMsg=$("cloudMsg"),email=$("email"),password=$("password"),authMsg=$("authMsg");
 const assignModal=$("assignModal"),assignTitle=$("assignTitle"),ai=$("ai"),as=$("as");
 const imp=$("imp");
+let freezerModal=null,frecipe=null,fcount=null,fservings=null;
 const pkeyInput=null;
 const D=["Sábado","Domingo","Lunes","Martes","Miércoles","Jueves","Viernes"];
 const S=["Desayuno","Media mañana 1","Media mañana 2","Comida","Merienda","Cena","Antes de dormir","Deporte"];
@@ -133,6 +134,15 @@ if(!state){
   state.freezer=[...(raw.freezer||[])];
   save();
 }
+state=state||{};
+state.recipes=Array.isArray(state.recipes)?state.recipes:[];
+state.week=state.week&&typeof state.week==="object"?state.week:{};
+state.history=Array.isArray(state.history)?state.history:[];
+state.freezer=Array.isArray(state.freezer)?state.freezer:[];
+state.foods=Array.isArray(state.foods)&&state.foods.length?state.foods:SEED.slice();
+state.sports=Array.isArray(state.sports)?state.sports:[{id:"walk",name:"Caminar",cat:"Caminar",points30:1},{id:"treadmill",name:"Cinta",cat:"Cardio",points30:2},{id:"bike",name:"Bicicleta estática",cat:"Cardio",points30:2},{id:"elliptical",name:"Elíptica",cat:"Cardio",points30:2},{id:"strength",name:"Entrenamiento de fuerza",cat:"Gimnasio",points30:2},{id:"circuit",name:"Circuito de gimnasio",cat:"Gimnasio",points30:2.5},{id:"homecardio",name:"Cardio en casa",cat:"Cardio",points30:2}];
+state.settings={budget:22,bank:0,bankUsed:0,weekKey:null,weekBankStart:0,bankUse:[0,0,0,0,0,0,0],...(state.settings||{})};
+state.settings.bankUse=Array.isArray(state.settings.bankUse)?state.settings.bankUse:[0,0,0,0,0,0,0];
 let recipes=state.recipes,week=state.week,menuHistory=state.history,freezer=state.freezer,foods=state.foods,sports=state.sports,settings=state.settings;
 let supabaseClient=null,cloudUser=null,pkey="";
 
@@ -283,6 +293,7 @@ function exportData(){let a=document.createElement("a");a.href=URL.createObjectU
 function importData(e){let f=e.target.files[0],r=new FileReader();r.onload=()=>{localStorage.setItem("menu6",r.result);location.reload()};r.readAsText(f)}
 function renderAll(){populateCats();renderWeek();renderFoods();renderRecipes();renderHistory();renderFreezer();renderSports();shopping();points()}
 document.body.insertAdjacentHTML("beforeend",`<div id="freezerModal" class="modal"><div class="box"><h2>Añadir congelado</h2><label>Receta</label><select id="frecipe"></select><label>Número de tuppers</label><input id="fcount" type="number" value="1"><label>Comensales por tupper</label><input id="fservings" type="number" value="1"><div class="row" style="margin-top:10px"><button class="primary" onclick="saveFrozen()">Guardar</button><button onclick="closeFrozen()">Cancelar</button></div></div></div>`);
-populateCats();renderAll();initCloud();
+freezerModal=$("freezerModal");frecipe=$("frecipe");fcount=$("fcount");fservings=$("fservings");
+try{populateCats();renderAll();initCloud();}catch(e){console.error(e);document.body.insertAdjacentHTML("beforeend",`<div style="position:fixed;left:10px;right:10px;bottom:10px;background:#fee2e2;color:#991b1b;padding:12px;border-radius:10px;z-index:9999"><b>Error de la aplicación:</b> ${esc(e&&e.message||e)}</div>`);}
 </script>
 </body></html>
