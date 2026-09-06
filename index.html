@@ -1,122 +1,276 @@
-<!doctype html><html lang="es"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#18212f"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<title>Mi Menú</title>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#18212f">
+<link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>Mi Menú V6</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#20242a;font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-header{background:#18212f;color:white;padding:18px 15px}header h1{margin:0}header p{margin:4px 0;color:#cbd5e1;font-size:12px}
-nav{display:flex;gap:6px;padding:8px;background:white;overflow:auto;position:sticky;top:0;z-index:4}nav button{border:0;border-radius:9px;padding:10px;background:#eef2f7;font-weight:700;white-space:nowrap}nav button.on{background:#2563eb;color:white}
-main{max-width:1200px;margin:14px auto;padding:0 10px}.view{display:none}.view.on{display:block}.card{background:white;border:1px solid #e2e6eb;border-radius:14px;padding:14px;margin-bottom:10px}
+header{background:#18212f;color:#fff;padding:16px 14px}header h1{margin:0}header p{margin:4px 0;color:#cbd5e1;font-size:12px}
+nav{display:flex;gap:6px;padding:8px;background:#fff;overflow:auto;position:sticky;top:0;z-index:4}nav button{border:0;border-radius:9px;padding:10px;background:#eef2f7;font-weight:700;white-space:nowrap}nav button.on{background:#2563eb;color:#fff}
+main{max-width:1400px;margin:14px auto;padding:0 10px}.view{display:none}.view.on{display:block}.card{background:#fff;border:1px solid #e2e6eb;border-radius:14px;padding:14px;margin-bottom:10px}
 button{cursor:pointer}.primary{background:#2563eb;color:#fff;border:0;border-radius:9px;padding:10px 12px;font-weight:700}.danger{background:#fee2e2;color:#b91c1c;border:0;border-radius:9px;padding:10px 12px;font-weight:700}
-input,select,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:9px;font:inherit}label{font-size:12px;font-weight:700;display:block;margin:8px 0 4px}
-.week{overflow:auto}.days{display:grid;grid-template-columns:repeat(7,165px);gap:7px;min-width:1160px}.day h3{background:#18212f;color:#fff;border-radius:8px;padding:8px;text-align:center;font-size:13px}.slot{border:1px solid #e2e6eb;border-radius:8px;padding:8px;margin:5px 0;min-height:45px}.slot small{display:block;color:#6b7280;font-size:9px}.empty{color:#9ca3af;font-style:italic}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}.tag{background:#eff6ff;color:#1d4ed8;padding:4px 8px;border-radius:99px;font-size:11px;font-weight:700}
-.ing{display:grid;grid-template-columns:1fr 80px 100px 35px;gap:5px;margin:5px 0}.row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.muted{color:#687385;font-size:13px}.list{padding:0}.list li{list-style:none;padding:8px 0;border-bottom:1px solid #edf0f2}
-.modal{display:none;position:fixed;inset:0;background:#0008;z-index:10;padding:12px;align-items:center;justify-content:center}.modal.show{display:flex}.box{background:#fff;border-radius:15px;padding:16px;width:100%;max-width:720px;max-height:94vh;overflow:auto}
-@media(max-width:600px){.ing{grid-template-columns:1fr 70px 90px 35px}}
-</style></head><body>
-<header><h1>🍲 Mi Menú</h1><p>Menús · recetas · congelador · compra · puntos</p></header>
-<nav id="nav"></nav><main>
-<section id="week" class="view on"><div class="card"><div class="row"><b>Semana actual</b><button class="primary" onclick="saveWeek()">💾 Guardar semana</button><button class="danger" onclick="week={} ,save()">Vaciar</button></div></div><div class="card week"><div id="days" class="days"></div></div></section>
-<section id="recipes" class="view"><div class="card"><div class="row"><b>Biblioteca de recetas</b><button class="primary" onclick="editRecipe()">+ Nueva receta</button></div></div><div class="card"><input id="search" placeholder="Buscar..." oninput="renderRecipes()"></div><div id="recipesList" class="cards"></div></section>
-<section id="freezer" class="view"><div class="card"><div class="row"><b>❄️ Congelador</b><button class="primary" onclick="addFrozen()">+ Añadir</button></div><p class="muted">Registra tuppers y número de comensales por tupper.</p></div><div id="freezerList" class="cards"></div></section>
+input,select,textarea{width:100%;padding:9px;border:1px solid #cbd5e1;border-radius:9px;font:inherit}label{font-size:12px;font-weight:700;display:block;margin:8px 0 4px}
+.row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.muted{color:#687385;font-size:13px}.tag{background:#eff6ff;color:#1d4ed8;padding:4px 8px;border-radius:99px;font-size:11px;font-weight:700}
+.week{overflow:auto}.days{display:grid;grid-template-columns:repeat(7,175px);gap:7px;min-width:1240px}.day h3{background:#18212f;color:#fff;border-radius:8px;padding:8px;text-align:center;font-size:13px}.slot{border:1px solid #e2e6eb;border-radius:8px;padding:8px;margin:5px 0;min-height:54px}.slot small{display:block;color:#6b7280;font-size:9px}.empty{color:#9ca3af;font-style:italic}.sport{background:#f0fdf4;border-color:#bbf7d0}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}.list{padding:0}.list li{list-style:none;padding:8px 0;border-bottom:1px solid #edf0f2}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:10;padding:12px;align-items:center;justify-content:center}.modal.show{display:flex}.box{background:#fff;border-radius:15px;padding:16px;width:100%;max-width:800px;max-height:94vh;overflow:auto}
+.ing{display:grid;grid-template-columns:minmax(180px,1fr) 85px 95px 45px;gap:5px;margin:5px 0}.foodrow{display:grid;grid-template-columns:1fr 100px 90px;gap:5px;margin:5px 0}
+table{border-collapse:collapse;width:100%}th,td{padding:7px;border-bottom:1px solid #edf0f2;text-align:right}th:first-child,td:first-child{text-align:left}
+.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.kpi>div{background:#f8fafc;border-radius:10px;padding:10px}.big{font-size:22px;font-weight:800}
+.ok{color:#15803d}.warn{color:#b45309}.bad{color:#b91c1c}
+@media(max-width:700px){.kpi{grid-template-columns:repeat(2,1fr)}.ing{grid-template-columns:1fr 75px 90px 40px}}
+</style>
+</head>
+<body>
+<header><h1>🍲 Mi Menú</h1><p>V6 · menú · alimentos · recetas · deporte · puntos clásicos</p></header>
+<nav id="nav"></nav>
+<main>
+<section id="week" class="view on">
+ <div class="card"><div class="row"><b>Semana: sábado → viernes</b><span id="weekLabel" class="muted"></span><button class="primary" onclick="saveWeek()">💾 Guardar semana</button><button class="danger" onclick="clearWeek()">Vaciar</button></div></div>
+ <div class="card week"><div id="days" class="days"></div></div>
+ <div class="card" id="weekSummary"></div>
+</section>
+
+<section id="foods" class="view">
+ <div class="card"><div class="row"><b>🥕 Base de alimentos</b><button class="primary" onclick="openFoodEditor()">+ Nuevo alimento</button></div>
+ <p class="muted">Clasificados por naturaleza y orden alfabético. La aplicación calcula los puntos clásicos a partir de kcal, grasa y fibra por 100 g.</p></div>
+ <div class="card"><div class="row"><select id="foodCat" onchange="renderFoods()"></select><input id="foodSearch" placeholder="Buscar alimento..." oninput="renderFoods()"><button onclick="searchUSDA()">🔎 Buscar base nutricional</button></div></div>
+ <div id="foodsList" class="cards"></div>
+</section>
+
+<section id="recipes" class="view">
+ <div class="card"><div class="row"><b>📚 Recetas</b><button class="primary" onclick="editRecipe()">+ Nueva receta</button></div>
+ <p class="muted">Clasificadas por naturaleza y alfabéticamente. Los ingredientes se seleccionan de la base de alimentos.</p></div>
+ <div class="card"><div class="row"><select id="recipeCat" onchange="renderRecipes()"></select><input id="search" placeholder="Buscar receta..." oninput="renderRecipes()"></div></div>
+ <div id="recipesList" class="cards"></div>
+</section>
+
+<section id="freezer" class="view"><div class="card"><div class="row"><b>❄️ Congelador</b><button class="primary" onclick="addFrozen()">+ Añadir</button></div><p class="muted">Tuppers y raciones disponibles.</p></div><div id="freezerList" class="cards"></div></section>
 <section id="history" class="view"><div class="card"><b>🗂️ Semanas guardadas</b><p class="muted">Recupera semanas que hayan funcionado.</p></div><div id="historyList"></div></section>
-<section id="shopping" class="view"><div class="card"><b>🛒 Lista de la compra</b><p class="muted">Las cantidades compatibles se suman.</p><button class="primary" onclick="shopping()">Actualizar</button></div><div class="card"><ul id="shop" class="list"></ul></div></section>
-<section id="points" class="view"><div class="card"><b>🎯 Puntos</b><label>Puntos diarios permitidos</label><input id="budget" type="number" onchange="settings.budget=+this.value;save()"><label>Puntos de ejercicio de hoy</label><input id="exercise" type="number" onchange="settings.exercise=+this.value;save()"></div><div class="card" id="pointsTable"></div></section>
-<section id="settings" class="view"><div class="card"><b>☁️ Sincronización</b><p class="muted">Conecta tu menú a Supabase para usar los mismos datos en el ordenador y el iPhone.</p><label>Supabase URL</label><input id="surl" autocomplete="off"><label>Supabase anon key / publishable key</label><input id="skey" type="password" autocomplete="off"><button class="primary" onclick="connectCloud()">Guardar y conectar</button><p id="cloudMsg" class="muted"></p><hr><b>👤 Cuenta</b><label>Correo electrónico</label><input id="email" type="email" autocomplete="email"><label>Contraseña</label><input id="password" type="password" autocomplete="current-password"><div class="row" style="margin-top:8px"><button class="primary" onclick="signInCloud()">Iniciar sesión</button><button onclick="signUpCloud()">Crear cuenta</button><button onclick="signOutCloud()">Cerrar sesión</button></div><p id="authMsg" class="muted"></p><button onclick="syncNow()">🔄 Sincronizar ahora</button></div><div class="card"><b>💾 Copia de seguridad</b><button class="primary" onclick="exportData()">Exportar</button> <button onclick="document.getElementById('imp').click()">Importar</button><input id="imp" type="file" accept=".json" hidden onchange="importData(event)"></div></section>
+<section id="shopping" class="view"><div class="card"><b>🛒 Lista de la compra</b><p class="muted">Se calcula a partir de las raciones de una persona.</p><button class="primary" onclick="shopping()">Actualizar</button></div><div class="card"><ul id="shop" class="list"></ul></div></section>
+
+<section id="sport" class="view">
+ <div class="card"><div class="row"><b>🏃 Deporte</b><button class="primary" onclick="editSport()">+ Nueva actividad</button></div>
+ <p class="muted">Cada actividad tiene un bonus de puntos configurable. El bonus se aplica al día y no se incorpora al banco.</p></div>
+ <div class="card"><input id="sportSearch" placeholder="Buscar deporte..." oninput="renderSports()"></div>
+ <div id="sportsList" class="cards"></div>
+</section>
+
+<section id="points" class="view">
+ <div class="card"><b>🎯 Puntos WW clásicos</b>
+ <div class="kpi">
+  <div><div class="muted">Puntos diarios</div><div class="big" id="budgetKpi">0</div></div>
+  <div><div class="muted">Banco acumulado</div><div class="big" id="bankKpi">0</div></div>
+  <div><div class="muted">Banco usado esta semana</div><div class="big" id="bankUsedKpi">0/10</div></div>
+  <div><div class="muted">Banco máximo</div><div class="big">15</div></div>
+ </div>
+ <label>Puntos diarios permitidos</label><input id="budget" type="number" min="0" onchange="settings.budget=+this.value||0;save();points()">
+ <p class="muted">Fórmula: kcal/50 + grasa(g)/12 − fibra(g)/5, con la fibra limitada a 4 g. El cálculo se hace sobre la ración de una persona.</p>
+ </div>
+ <div class="card" id="pointsTable"></div>
+</section>
+
+<section id="settings" class="view">
+ <div class="card"><b>☁️ Sincronización</b><p class="muted">La V6 mantiene la conexión Supabase de la V5.</p>
+ <label>Supabase URL</label><input id="surl" autocomplete="off"><label>Supabase anon key / publishable key</label><input id="skey" type="password" autocomplete="off"><button class="primary" onclick="connectCloud()">Guardar y conectar</button><p id="cloudMsg" class="muted"></p>
+ <hr><b>👤 Cuenta</b><label>Correo electrónico</label><input id="email" type="email" autocomplete="email"><label>Contraseña</label><input id="password" type="password" autocomplete="current-password">
+ <div class="row" style="margin-top:8px"><button class="primary" onclick="signInCloud()">Iniciar sesión</button><button onclick="signUpCloud()">Crear cuenta</button><button onclick="signOutCloud()">Cerrar sesión</button></div><p id="authMsg" class="muted"></p><button onclick="syncNow()">🔄 Sincronizar ahora</button></div>
+ <div class="card"><b>💾 Copia de seguridad</b><button class="primary" onclick="exportData()">Exportar</button> <button onclick="document.getElementById('imp').click()">Importar</button><input id="imp" type="file" accept=".json" hidden onchange="importData(event)"></div>
+</section>
 </main>
-<div id="recipeModal" class="modal"><div class="box"><h2 id="rt">Nueva receta</h2><input id="rid" hidden><label>Nombre</label><input id="rn"><label>Tipo</label><select id="rtype"></select><label>Personas</label><input id="rp" type="number" value="4"><label>Ingredientes</label><div id="ings"></div><button onclick="addIng()">+ Ingrediente</button><label>Elaboración</label><textarea id="steps"></textarea><div class="row" style="margin-top:10px"><button class="primary" onclick="saveRecipe()">Guardar</button><button onclick="closeM()">Cancelar</button></div></div></div>
-<div id="assignModal" class="modal"><div class="box"><h2>Asignar receta</h2><p id="ai" class="muted"></p><select id="as"></select><div class="row" style="margin-top:10px"><button class="primary" onclick="assign()">Asignar</button><button onclick="closeAssign()">Cancelar</button></div></div></div>
+
+<div id="recipeModal" class="modal"><div class="box"><h2 id="rt">Nueva receta</h2><input id="rid" hidden><label>Nombre</label><input id="rn"><label>Clasificación</label><select id="rtype"></select><label>Personas de la receta</label><input id="rp" type="number" min="1" value="4"><label>Ingredientes</label><div id="ings"></div><button onclick="addIng()">+ Ingrediente</button><label>Elaboración</label><textarea id="steps"></textarea><div class="row" style="margin-top:10px"><button class="primary" onclick="saveRecipe()">Guardar</button><button onclick="closeM()">Cancelar</button></div></div></div>
+<div id="foodModal" class="modal"><div class="box"><h2 id="ft">Nuevo alimento</h2><input id="fid" hidden><label>Clasificación</label><select id="fcat"></select><label>Nombre</label><input id="fn"><div class="foodrow"><div><label>kcal / 100 g</label><input id="fk" type="number" step=".1"></div><div><label>grasa g</label><input id="ff" type="number" step=".1"></div><div><label>fibra g</label><input id="ffi" type="number" step=".1"></div></div><div class="foodrow"><div><label>Densidad g/ml</label><input id="fd" type="number" step=".001" value="1"></div><div><label>g por unidad</label><input id="fu" type="number" step=".1"></div><div></div></div><div class="row" style="margin-top:10px"><button class="primary" onclick="saveFood()">Guardar</button><button onclick="closeFood()">Cancelar</button></div></div></div>
+<div id="sportModal" class="modal"><div class="box"><h2 id="st">Nueva actividad</h2><input id="sid" hidden><label>Nombre</label><input id="sn"><label>Clasificación</label><select id="scat"><option>Cardio</option><option>Gimnasio</option><option>Caminar</option><option>Otros</option></select><label>Puntos bonus por 30 minutos</label><input id="sp" type="number" step=".1" min="0"><div class="row" style="margin-top:10px"><button class="primary" onclick="saveSport()">Guardar</button><button onclick="closeSport()">Cancelar</button></div></div></div>
+<div id="assignModal" class="modal"><div class="box"><h2 id="assignTitle">Asignar</h2><p id="ai" class="muted"></p><select id="as"></select><div class="row" style="margin-top:10px"><button class="primary" onclick="assign()">Asignar</button><button onclick="closeAssign()">Cancelar</button></div></div></div>
+
 <script>
-const D=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"],S=["Desayuno","Media mañana 1","Media mañana 2","Comida","Merienda 1","Merienda 2","Cena","Before bed"],T=["Guisos","Pasta","Cremas","Arroces","Verduras","Asados","Otros"],DT=["Guisos","Pasta","Cremas","Arroces","Verduras","Guisos","Asados"];
-let x=JSON.parse(localStorage.getItem("menu4")||'{"recipes":[],"week":{},"history":[],"freezer":[],"settings":{"budget":22,"exercise":0}}'),recipes=x.recipes,week=x.week,history=x.history,freezer=x.freezer,settings=x.settings,pkey="";
-let supabaseClient=null, cloudUser=null;
-function save(){localStorage.setItem("menu4",JSON.stringify({recipes,week,history,freezer,settings}))}
+const D=["Sábado","Domingo","Lunes","Martes","Miércoles","Jueves","Viernes"];
+const S=["Desayuno","Media mañana 1","Media mañana 2","Comida","Merienda","Cena","Antes de dormir","Deporte"];
+const MEALC=["Guisos","Pasta","Cremas","Arroces","Verduras","Asados","Otros"];
+const MAINC=["Guisos","Pasta","Cremas","Arroces","Verduras","Asados"];
+const FOODC=["Arroces y cereales","Bebidas vegetales","Carnes","Conservas y salsas","Dulces","Frutas","Frutos secos y semillas","Huevos y lácteos","Legumbres","Pescados y mariscos","Verduras","Aceites y grasas","Otros"];
+const SPORTC=["Cardio","Gimnasio","Caminar","Otros"];
+const SEED=[{"cat": "Arroces y cereales", "name": "Arroz blanco, crudo", "kcal": 365, "fat": 0.7, "fiber": 1.3, "density": 1, "unitg": 40, "source": "base"}, {"cat": "Arroces y cereales", "name": "Avena, copos", "kcal": 389, "fat": 6.9, "fiber": 10.1, "density": 1, "unitg": 40, "source": "base"}, {"cat": "Arroces y cereales", "name": "Pan blanco", "kcal": 266, "fat": 3.2, "fiber": 2.4, "density": 1, "unitg": 30, "source": "base"}, {"cat": "Arroces y cereales", "name": "Pan integral", "kcal": 247, "fat": 3.4, "fiber": 6.0, "density": 1, "unitg": 30, "source": "base"}, {"cat": "Arroces y cereales", "name": "Pasta, seca", "kcal": 371, "fat": 1.5, "fiber": 3.2, "density": 1, "unitg": 80, "source": "base"}, {"cat": "Arroces y cereales", "name": "Harina de trigo", "kcal": 364, "fat": 1.0, "fiber": 2.7, "density": 1, "unitg": 20, "source": "base"}, {"cat": "Legumbres", "name": "Lentejas, secas", "kcal": 352, "fat": 1.1, "fiber": 10.7, "density": 1, "unitg": 80, "source": "base"}, {"cat": "Legumbres", "name": "Garbanzos, secos", "kcal": 378, "fat": 6.0, "fiber": 12.2, "density": 1, "unitg": 80, "source": "base"}, {"cat": "Legumbres", "name": "Alubias blancas, secas", "kcal": 333, "fat": 1.5, "fiber": 15.7, "density": 1, "unitg": 80, "source": "base"}, {"cat": "Verduras", "name": "Patata", "kcal": 77, "fat": 0.1, "fiber": 2.2, "density": 1, "unitg": 150, "source": "base"}, {"cat": "Verduras", "name": "Tomate", "kcal": 18, "fat": 0.2, "fiber": 1.2, "density": 1, "unitg": 120, "source": "base"}, {"cat": "Verduras", "name": "Cebolla", "kcal": 40, "fat": 0.1, "fiber": 1.7, "density": 1, "unitg": 120, "source": "base"}, {"cat": "Verduras", "name": "Pimiento rojo", "kcal": 31, "fat": 0.3, "fiber": 2.1, "density": 1, "unitg": 120, "source": "base"}, {"cat": "Verduras", "name": "Calabacín", "kcal": 17, "fat": 0.3, "fiber": 1.0, "density": 1, "unitg": 200, "source": "base"}, {"cat": "Verduras", "name": "Berenjena", "kcal": 25, "fat": 0.2, "fiber": 3.0, "density": 1, "unitg": 250, "source": "base"}, {"cat": "Verduras", "name": "Zanahoria", "kcal": 41, "fat": 0.2, "fiber": 2.8, "density": 1, "unitg": 80, "source": "base"}, {"cat": "Verduras", "name": "Brócoli", "kcal": 34, "fat": 0.4, "fiber": 2.6, "density": 1, "unitg": 150, "source": "base"}, {"cat": "Verduras", "name": "Espinaca", "kcal": 23, "fat": 0.4, "fiber": 2.2, "density": 1, "unitg": 100, "source": "base"}, {"cat": "Verduras", "name": "Lechuga", "kcal": 15, "fat": 0.2, "fiber": 1.3, "density": 1, "unitg": 80, "source": "base"}, {"cat": "Verduras", "name": "Pepino", "kcal": 15, "fat": 0.1, "fiber": 0.5, "density": 1, "unitg": 150, "source": "base"}, {"cat": "Verduras", "name": "Calabaza", "kcal": 26, "fat": 0.1, "fiber": 0.5, "density": 1, "unitg": 200, "source": "base"}, {"cat": "Verduras", "name": "Judías verdes", "kcal": 31, "fat": 0.1, "fiber": 3.4, "density": 1, "unitg": 150, "source": "base"}, {"cat": "Frutas", "name": "Manzana", "kcal": 52, "fat": 0.2, "fiber": 2.4, "density": 1, "unitg": 180, "source": "base"}, {"cat": "Frutas", "name": "Plátano", "kcal": 89, "fat": 0.3, "fiber": 2.6, "density": 1, "unitg": 120, "source": "base"}, {"cat": "Frutas", "name": "Naranja", "kcal": 47, "fat": 0.1, "fiber": 2.4, "density": 1, "unitg": 180, "source": "base"}, {"cat": "Frutas", "name": "Mandarina", "kcal": 53, "fat": 0.3, "fiber": 1.8, "density": 1, "unitg": 80, "source": "base"}, {"cat": "Frutas", "name": "Pera", "kcal": 57, "fat": 0.1, "fiber": 3.1, "density": 1, "unitg": 170, "source": "base"}, {"cat": "Frutas", "name": "Melocotón", "kcal": 39, "fat": 0.3, "fiber": 1.5, "density": 1, "unitg": 150, "source": "base"}, {"cat": "Frutas", "name": "Sandía", "kcal": 30, "fat": 0.2, "fiber": 0.4, "density": 1, "unitg": 250, "source": "base"}, {"cat": "Frutas", "name": "Melón", "kcal": 34, "fat": 0.2, "fiber": 0.9, "density": 1, "unitg": 200, "source": "base"}, {"cat": "Frutas", "name": "Fresas", "kcal": 32, "fat": 0.3, "fiber": 2.0, "density": 1, "unitg": 150, "source": "base"}, {"cat": "Frutas", "name": "Arándanos", "kcal": 57, "fat": 0.3, "fiber": 2.4, "density": 1, "unitg": 100, "source": "base"}, {"cat": "Frutos secos y semillas", "name": "Almendras", "kcal": 579, "fat": 49.9, "fiber": 12.5, "density": 1, "unitg": 1.2, "source": "base"}, {"cat": "Frutos secos y semillas", "name": "Nueces", "kcal": 654, "fat": 65.2, "fiber": 6.7, "density": 1, "unitg": 1.2, "source": "base"}, {"cat": "Frutos secos y semillas", "name": "Anacardos", "kcal": 553, "fat": 43.9, "fiber": 3.3, "density": 1, "unitg": 1.5, "source": "base"}, {"cat": "Frutos secos y semillas", "name": "Semillas de chía", "kcal": 486, "fat": 30.7, "fiber": 34.4, "density": 1, "unitg": 1, "source": "base"}, {"cat": "Aceites y grasas", "name": "Aceite de oliva", "kcal": 884, "fat": 100, "fiber": 0, "density": 0.92, "unitg": 10, "source": "base"}, {"cat": "Aceites y grasas", "name": "Aceite de girasol", "kcal": 884, "fat": 100, "fiber": 0, "density": 0.92, "unitg": 10, "source": "base"}, {"cat": "Carnes", "name": "Pechuga de pollo, sin piel", "kcal": 120, "fat": 2.6, "fiber": 0, "density": 1, "unitg": 150, "source": "base"}, {"cat": "Carnes", "name": "Pechuga de pavo", "kcal": 114, "fat": 2.1, "fiber": 0, "density": 1, "unitg": 150, "source": "base"}, {"cat": "Carnes", "name": "Carne magra de cerdo", "kcal": 143, "fat": 5.3, "fiber": 0, "density": 1, "unitg": 150, "source": "base"}, {"cat": "Carnes", "name": "Ternera magra", "kcal": 176, "fat": 7.5, "fiber": 0, "density": 1, "unitg": 150, "source": "base"}, {"cat": "Carnes", "name": "Carne picada de ternera", "kcal": 217, "fat": 14.0, "fiber": 0, "density": 1, "unitg": 100, "source": "base"}, {"cat": "Carnes", "name": "Jamón serrano", "kcal": 241, "fat": 13.9, "fiber": 0, "density": 1, "unitg": 30, "source": "base"}, {"cat": "Carnes", "name": "Jamón cocido", "kcal": 116, "fat": 3.4, "fiber": 0, "density": 1, "unitg": 30, "source": "base"}, {"cat": "Pescados y mariscos", "name": "Merluza", "kcal": 89, "fat": 1.8, "fiber": 0, "density": 1, "unitg": 150, "source": "base"}, {"cat": "Pescados y mariscos", "name": "Bacalao", "kcal": 82, "fat": 0.7, "fiber": 0, "density": 1, "unitg": 150, "source": "base"}, {"cat": "Pescados y mariscos", "name": "Salmón", "kcal": 208, "fat": 13.4, "fiber": 0, "density": 1, "unitg": 150, "source": "base"}, {"cat": "Pescados y mariscos", "name": "Atún al natural", "kcal": 116, "fat": 0.8, "fiber": 0, "density": 1, "unitg": 80, "source": "base"}, {"cat": "Pescados y mariscos", "name": "Gambas", "kcal": 99, "fat": 0.3, "fiber": 0, "density": 1, "unitg": 100, "source": "base"}, {"cat": "Huevos y lácteos", "name": "Huevo", "kcal": 143, "fat": 9.5, "fiber": 0, "density": 1, "unitg": 60, "source": "base"}, {"cat": "Huevos y lácteos", "name": "Leche entera", "kcal": 61, "fat": 3.3, "fiber": 0, "density": 1.03, "unitg": 200, "source": "base"}, {"cat": "Huevos y lácteos", "name": "Leche semidesnatada", "kcal": 46, "fat": 1.6, "fiber": 0, "density": 1.03, "unitg": 200, "source": "base"}, {"cat": "Huevos y lácteos", "name": "Leche desnatada", "kcal": 34, "fat": 0.1, "fiber": 0, "density": 1.03, "unitg": 200, "source": "base"}, {"cat": "Huevos y lácteos", "name": "Yogur natural", "kcal": 61, "fat": 3.3, "fiber": 0, "density": 1.03, "unitg": 125, "source": "base"}, {"cat": "Huevos y lácteos", "name": "Yogur griego natural", "kcal": 97, "fat": 5.0, "fiber": 0, "density": 1.03, "unitg": 125, "source": "base"}, {"cat": "Huevos y lácteos", "name": "Queso fresco", "kcal": 98, "fat": 4.3, "fiber": 0, "density": 1, "unitg": 60, "source": "base"}, {"cat": "Huevos y lácteos", "name": "Queso manchego", "kcal": 467, "fat": 38.0, "fiber": 0, "density": 1, "unitg": 30, "source": "base"}, {"cat": "Bebidas vegetales", "name": "Leche de avena sin azúcar", "kcal": 40, "fat": 1.5, "fiber": 0.8, "density": 1.0, "unitg": 200, "source": "base"}, {"cat": "Bebidas vegetales", "name": "Leche de almendras sin azúcar", "kcal": 15, "fat": 1.2, "fiber": 0.3, "density": 1.0, "unitg": 200, "source": "base"}, {"cat": "Bebidas vegetales", "name": "Leche de coco bebida sin azúcar", "kcal": 20, "fat": 1.0, "fiber": 0, "density": 1.0, "unitg": 200, "source": "base"}, {"cat": "Conservas y salsas", "name": "Tomate triturado", "kcal": 24, "fat": 0.1, "fiber": 1.3, "density": 1, "unitg": 100, "source": "base"}, {"cat": "Conservas y salsas", "name": "Tomate frito", "kcal": 75, "fat": 4.0, "fiber": 1.5, "density": 1, "unitg": 100, "source": "base"}, {"cat": "Conservas y salsas", "name": "Maíz dulce en conserva", "kcal": 86, "fat": 1.2, "fiber": 2.4, "density": 1, "unitg": 100, "source": "base"}, {"cat": "Dulces", "name": "Chocolate negro 70%", "kcal": 598, "fat": 42.6, "fiber": 10.9, "density": 1, "unitg": 10, "source": "base"}, {"cat": "Dulces", "name": "Azúcar", "kcal": 387, "fat": 0, "fiber": 0, "density": 1, "unitg": 5, "source": "base"}];
+
+let raw=JSON.parse(localStorage.getItem("menu4")||"{}");
+let state=JSON.parse(localStorage.getItem("menu6")||"null");
+if(!state){
+  state={recipes:[],week:{},history:[],freezer:[],foods:SEED,sports:[
+    {id:"walk",name:"Caminar",cat:"Caminar",points30:1},
+    {id:"treadmill",name:"Cinta",cat:"Cardio",points30:2},
+    {id:"bike",name:"Bicicleta estática",cat:"Cardio",points30:2},
+    {id:"elliptical",name:"Elíptica",cat:"Cardio",points30:2},
+    {id:"strength",name:"Entrenamiento de fuerza",cat:"Gimnasio",points30:2},
+    {id:"circuit",name:"Circuito de gimnasio",cat:"Gimnasio",points30:2.5},
+    {id:"homecardio",name:"Cardio en casa",cat:"Cardio",points30:2}
+  ],settings:{budget:(raw.settings&&raw.settings.budget)||22,bank:0,bankUsed:0,weekKey:null,weekBankStart:0,bankUse:[0,0,0,0,0,0,0]}};
+  // Migrate legacy recipes without losing them. Ingredients are matched to the seed where possible.
+  (raw.recipes||[]).forEach(r=>{
+    state.recipes.push({...r,id:r.id||crypto.randomUUID(),ingredients:(r.ingredients||[]).map(i=>{
+      let f=state.foods.find(a=>a.name.toLowerCase()===String(i.name||"").toLowerCase());
+      return {foodId:f?.id||null,name:i.name,qty:i.qty,unit:i.unit};
+    })});
+  });
+  state.week={...(raw.week||{})};
+  state.history=[...(raw.history||[])];
+  state.freezer=[...(raw.freezer||[])];
+  save();
+}
+let recipes=state.recipes,week=state.week,history=state.history,freezer=state.freezer,foods=state.foods,sports=state.sports,settings=state.settings;
+let supabaseClient=null,cloudUser=null,pkey="";
+
+function save(){state={recipes,week,history,freezer,foods,sports,settings};localStorage.setItem("menu6",JSON.stringify(state));if(supabaseClient&&cloudUser)pushCloud()}
 function esc(a){return String(a??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-nav.innerHTML=["week:📅 Semana","recipes:📚 Recetas","freezer:❄️ Congelador","history:🗂️ Semanas","shopping:🛒 Compra","points:🎯 Puntos","settings:⚙️ Datos"].map(a=>{let[z,n]=a.split(":");return `<button onclick="show('${z}')">${n}</button>`}).join("");
-function show(id){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==id));[...nav.children].forEach((b,i)=>b.classList.toggle("on",["week","recipes","freezer","history","shopping","points","settings"][i]==id));if(id=="shopping")shopping();if(id=="points")points();if(id=="freezer")renderFreezer();if(id=="history")renderHistory()}
-function renderWeek(){days.innerHTML=D.map((d,di)=>`<div class="day"><h3>${d}<br><small>${DT[di]}</small></h3>${S.map((s,si)=>{let r=recipes.find(r=>r.id==week[di+"_"+si]);return `<div class="slot" onclick="assignOpen('${di}_${si}')"><small>${s}</small><b class="${r?'':'empty'}">${r?esc(r.name):"Añadir…"}</b></div>`}).join("")}</div>`).join("")}
-function renderRecipes(){let q=(search.value||"").toLowerCase(),a=recipes.filter(r=>(r.name+r.type).toLowerCase().includes(q));recipesList.innerHTML=a.map(r=>`<div class="card"><span class="tag">${esc(r.type)}</span><h3>${esc(r.name)}</h3><p class="muted">${r.people} personas · ${r.ingredients.length} ingredientes</p><button onclick="editRecipe('${r.id}')">Editar</button> <button onclick="addFrozen('${r.id}')">❄️ Congelar</button></div>`).join("")||"<div class='card'>No hay recetas.</div>"}
-function editRecipe(id){let r=recipes.find(a=>a.id==id);rid.value=r?.id||"";rn.value=r?.name||"";rtype.innerHTML=T.map(t=>`<option>${t}</option>`).join("");rtype.value=r?.type||"Guisos";rp.value=r?.people||4;ings.innerHTML="";(r?.ingredients?.length?r.ingredients:[{}]).forEach(addIng);steps.value=r?.steps||"";rt.textContent=r?"Editar receta":"Nueva receta";recipeModal.classList.add("show")}
-function addIng(a={}){let e=document.createElement("div");e.className="ing";e.innerHTML=`<input class="in" placeholder="Ingrediente" value="${esc(a.name||"")}"><input class="iq" type="number" step=".01" value="${a.qty??""}"><select class="iu"><option>unidades</option><option>g</option><option>kg</option><option>ml</option><option>l</option><option>docenas</option></select><button onclick="this.parentElement.remove()">×</button>`;e.querySelector(".iu").value=a.unit||"unidades";ings.appendChild(e)}
-function saveRecipe(){let ing=[...document.querySelectorAll(".ing")].map(e=>({name:e.querySelector(".in").value.trim(),qty:+e.querySelector(".iq").value,unit:e.querySelector(".iu").value})).filter(a=>a.name&&a.qty>0);if(!rn.value||!ing.length)return alert("Falta nombre o ingredientes.");let r={id:rid.value||crypto.randomUUID(),name:rn.value.trim(),type:rtype.value,people:+rp.value||1,ingredients:ing,steps:steps.value};let i=recipes.findIndex(a=>a.id==r.id);i<0?recipes.push(r):recipes[i]=r;save();closeM();renderRecipes();renderWeek();shopping()}
+function norm(a){return String(a||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()}
+function alpha(a,b){return String(a).localeCompare(String(b),"es",{sensitivity:"base"})}
+nav.innerHTML=[
+"week:📅 Semana","foods:🥕 Alimentos","recipes:📚 Recetas","freezer:❄️ Congelador","history:🗂️ Semanas","shopping:🛒 Compra","sport:🏃 Deporte","points:🎯 Puntos","settings:⚙️ Datos"
+].map(a=>{let[z,n]=a.split(":");return `<button onclick="show('${z}')">${n}</button>`}).join("");
+function show(id){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===id));[...nav.children].forEach((b,i)=>b.classList.toggle("on",["week","foods","recipes","freezer","history","shopping","sport","points","settings"][i]===id));if(id==="shopping")shopping();if(id==="points")points();if(id==="freezer")renderFreezer();if(id==="history")renderHistory();if(id==="foods")renderFoods();if(id==="recipes")renderRecipes();if(id==="sport")renderSports()}
+function currentWeekKey(){let now=new Date(),day=now.getDay();let diff=(day===6)?0:day+1;let d=new Date(now);d.setHours(0,0,0,0);d.setDate(d.getDate()-diff);return d.toISOString().slice(0,10)}
+function weekDates(){let k=currentWeekKey(),d=new Date(k+"T00:00:00");return D.map((_,i)=>{let x=new Date(d);x.setDate(d.getDate()+i);return x})}
+function renderWeek(){let dates=weekDates();weekLabel.textContent=dates[0].toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit"})+" → "+dates[6].toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"});
+days.innerHTML=D.map((d,di)=>`<div class="day"><h3>${d}<br><small>${di===0?"Guisos":di===1?"Asados":di===2?"Guisos":di===3?"Pasta":di===4?"Cremas":di===5?"Arroces":"Verduras"}</small></h3>${S.map((s,si)=>{if(si===7){let sv=week[di+"_"+si], sp=sports.find(a=>a.id===(typeof sv==="object"?sv.sportId:sv));let mins=typeof sv==="object"?(+sv.minutes||30):30;return `<div class="slot sport" onclick="assignOpen('${di}_${si}')"><small>🏃 ${s}</small><b class="${sp?'':'empty'}">${sp?esc(sp.name):"Añadir…"}</b>${sp?`<small>${mins} min · ${(sp.points30*mins/30).toFixed(1)} pt</small>`:""}</div>`}
+let r=recipes.find(r=>r.id===week[di+"_"+si]);return `<div class="slot" onclick="assignOpen('${di}_${si}')"><small>${s}</small><b class="${r?'':'empty'}">${r?esc(r.name):"Añadir…"}</b>${r?`<small>${recipePoints(r).toFixed(1)} pt</small>`:""}</div>`}).join("")}</div>`).join("");
+weekSummary.innerHTML=weekSummaryHtml();
+}
+function weekSummaryHtml(){let totalC=0,totalS=0,totalB=0;for(let di=0;di<7;di++){let c=dayFoodPoints(di);totalC+=c;totalS+=daySportPoints(di)}return `<div class="kpi"><div><div class="muted">Consumo semanal</div><div class="big">${totalC.toFixed(1)}</div></div><div><div class="muted">Bonus deporte</div><div class="big">${totalS.toFixed(1)}</div></div><div><div class="muted">Banco</div><div class="big">${settings.bank}</div></div><div><div class="muted">Máx. banco</div><div class="big">15</div></div></div>`}
+function populateCats(){let fhtml=`<option value="">Todas</option>`+FOODC.map(c=>`<option>${c}</option>`).join("");foodCat.innerHTML=fhtml;fcat.innerHTML=FOODC.map(c=>`<option>${c}</option>`).join("");recipeCat.innerHTML=`<option value="">Todas</option>`+MEALC.map(c=>`<option>${c}</option>`).join("");rtype.innerHTML=MEALC.map(c=>`<option>${c}</option>`).join("")}
+async function searchUSDA(){
+  const q=foodSearch.value.trim();
+  if(!q){alert("Escribe primero el alimento que quieres buscar.");return}
+  foodsList.innerHTML="<div class='card'>Buscando automáticamente en la base nutricional USDA…</div>";
+  try{
+    const url="https://api.nal.usda.gov/fdc/v1/foods/search?api_key=DEMO_KEY&query="+encodeURIComponent(q)+"&pageSize=20";
+    const res=await fetch(url);
+    if(!res.ok)throw new Error("La base nutricional no respondió.");
+    const data=await res.json();
+    const results=(data.foods||[]).map(f=>{
+      const n=id=>{let x=(f.foodNutrients||[]).find(a=>a.nutrientId===id);return x?.value??0};
+      const cat=f.foodCategory||"Otros";
+      return {id:"usda-"+f.fdcId,cat:FOODC.includes(cat)?cat:"Otros",name:f.description,kcal:n(1008),fat:n(1004),fiber:n(1079),density:1,unitg:null,source:"USDA FoodData Central",fdcId:f.fdcId};
+    }).filter(f=>f.kcal||f.fat||f.fiber);
+    if(!results.length){foodsList.innerHTML="<div class='card'>No encontré resultados. Prueba otro nombre.</div>";return}
+    // Show results with a button to add each result to the local catalog.
+    foodsList.innerHTML=results.map(f=>`<div class="card"><span class="tag">${esc(f.cat)}</span><h3>${esc(f.name)}</h3><p class="muted">${f.kcal} kcal · ${f.fat} g grasa · ${f.fiber} g fibra /100g · USDA</p><button onclick='addUSDAFood(${JSON.stringify(f).replace(/</g,"\\\\u003c")})'>➕ Añadir a mi base</button></div>`).join("");
+  }catch(e){foodsList.innerHTML="<div class='card'><b>No se pudo consultar automáticamente la base nutricional.</b><p class='muted'>La base local sigue disponible. Puedes volver a intentarlo más tarde.</p></div>"}
+}
+function addUSDAFood(f){
+  if(foods.some(x=>x.source==="USDA FoodData Central"&&x.fdcId===f.fdcId)){alert("Ese alimento ya está en tu base.");return}
+  f.id="usda-"+f.fdcId;foods.push(f);save();renderFoods();alert("Alimento añadido a tu base.");
+}
+function renderFoods(){let q=norm(foodSearch.value),cat=foodCat.value;let a=foods.filter(f=>(!cat||f.cat===cat)&&(!q||norm(f.name).includes(q))).sort((x,y)=>alpha(x.cat,y.cat)||alpha(x.name,y.name));foodsList.innerHTML=a.map(f=>`<div class="card"><span class="tag">${esc(f.cat)}</span><h3>${esc(f.name)}</h3><p class="muted">${f.kcal} kcal · ${f.fat} g grasa · ${f.fiber} g fibra /100g</p><p><b>${foodPoints100(f).toFixed(2)} pt/100g</b></p><button onclick="editFood('${f.id}')">Editar</button></div>`).join("")||"<div class='card'>No hay alimentos con ese filtro.</div>"}
+function openFoodEditor(){fid.value="";fcat.value=FOODC[0];fn.value="";fk.value="";ff.value="";ffi.value="";fd.value="1";fu.value="";ft.textContent="Nuevo alimento";foodModal.classList.add("show")}
+function editFood(id){let f=foods.find(a=>a.id===id);if(!f)return;fid.value=f.id;fcat.value=f.cat;fn.value=f.name;fk.value=f.kcal;ff.value=f.fat;ffi.value=f.fiber;fd.value=f.density||1;fu.value=f.unitg||"";ft.textContent="Editar alimento";foodModal.classList.add("show")}
+function saveFood(){if(!fn.value.trim())return alert("Falta el nombre.");let f={id:fid.value||crypto.randomUUID(),cat:fcat.value,name:fn.value.trim(),kcal:+fk.value||0,fat:+ff.value||0,fiber:+ffi.value||0,density:+fd.value||1,unitg:+fu.value||null,source:"user"};let i=foods.findIndex(a=>a.id===f.id);i<0?foods.push(f):foods[i]=f;save();closeFood();renderFoods()}
+function closeFood(){foodModal.classList.remove("show")}
+function foodPoints100(f){return f.kcal/50+f.fat/12-Math.min(f.fiber,4)/5}
+function foodGrams(i,f){let q=+i.qty||0,u=i.unit||"g";if(u==="kg")return q*1000;if(u==="ml")return q*(f.density||1);if(u==="l")return q*1000*(f.density||1);if(u==="unidades")return q*(f.unitg||100);if(u==="docenas")return q*12*(f.unitg||100);return q}
+function ingredientNutrition(i){let f=foods.find(a=>a.id===i.foodId);if(!f)return null;let g=foodGrams(i,f),factor=g/100;return {f,g,kcal:f.kcal*factor,fat:f.fat*factor,fiber:f.fiber*factor}}
+function recipePoints(r){let kcal=0,fat=0,fiber=0;(r.ingredients||[]).forEach(i=>{let n=ingredientNutrition(i);if(n){kcal+=n.kcal/r.people;fat+=n.fat/r.people;fiber+=n.fiber/r.people}});return kcal/50+fat/12-Math.min(fiber,4)/5}
+function editRecipe(id){let r=recipes.find(a=>a.id===id);rid.value=r?.id||"";rn.value=r?.name||"";rtype.innerHTML=MEALC.map(t=>`<option>${t}</option>`).join("");rtype.value=r?.type||"Guisos";rp.value=r?.people||4;ings.innerHTML="";(r?.ingredients?.length?r.ingredients:[{}]).forEach(addIng);steps.value=r?.steps||"";rt.textContent=r?"Editar receta":"Nueva receta";recipeModal.classList.add("show")}
+function addIng(a={}){let e=document.createElement("div");e.className="ing";let opts=foods.slice().sort((x,y)=>alpha(x.cat,y.cat)||alpha(x.name,y.name)).map(f=>`<option value="${f.id}">${esc(f.cat)} · ${esc(f.name)}</option>`).join("");e.innerHTML=`<select class="if">${opts}</select><input class="iq" type="number" step=".01" value="${a.qty??""}" placeholder="Cantidad"><select class="iu"><option>g</option><option>kg</option><option>ml</option><option>l</option><option>unidades</option><option>docenas</option></select><button onclick="this.parentElement.remove()">×</button>`;ings.appendChild(e);if(a.foodId)e.querySelector(".if").value=a.foodId;e.querySelector(".iu").value=a.unit||"g"}
+function saveRecipe(){let ing=[...document.querySelectorAll(".ing")].map(e=>({foodId:e.querySelector(".if").value,qty:+e.querySelector(".iq").value,unit:e.querySelector(".iu").value})).filter(a=>a.foodId&&a.qty>0);if(!rn.value||!ing.length)return alert("Falta nombre o ingredientes.");let r={id:rid.value||crypto.randomUUID(),name:rn.value.trim(),type:rtype.value,people:+rp.value||1,ingredients:ing,steps:steps.value};let i=recipes.findIndex(a=>a.id===r.id);i<0?recipes.push(r):recipes[i]=r;save();closeM();renderRecipes();renderWeek();shopping()}
 function closeM(){recipeModal.classList.remove("show")}
-function assignOpen(k){pkey=k;let [di,si]=k.split("_"),a=si==3?recipes.filter(r=>r.type==DT[di]):recipes;as.innerHTML="<option value=''>— Vacío —</option>"+(a.length?a:recipes).map(r=>`<option value="${r.id}">${esc(r.name)} · ${r.type}</option>`).join("");as.value=week[k]||"";ai.textContent=D[di]+" · "+S[si];assignModal.classList.add("show")}
-function closeAssign(){assignModal.classList.remove("show")}
-function assign(){as.value?week[pkey]=as.value:delete week[pkey];save();closeAssign();renderWeek();shopping()}
-function base(u){return u=="kg"?["g",1000]:u=="l"?["ml",1000]:u=="docenas"?["unidades",12]:[u,1]}
-function shopping(){let m={};Object.values(week).forEach(id=>{let r=recipes.find(a=>a.id==id);if(!r)return;r.ingredients.forEach(i=>{let [u,f]=base(i.unit),k=i.name.toLowerCase()+"|"+u;m[k]??={name:i.name,unit:u,qty:0};m[k].qty+=i.qty*f/r.people})});shop.innerHTML=Object.values(m).map(a=>`<li>☐ <b>${esc(a.name)}</b> — ${Math.round(a.qty*100)/100} ${a.unit}</li>`).join("")||"<li>No hay ingredientes.</li>"}
+function renderRecipes(){let q=norm(search.value),cat=recipeCat.value;let a=recipes.filter(r=>(!cat||r.type===cat)&&(!q||norm(r.name).includes(q))).sort((x,y)=>alpha(x.type,y.type)||alpha(x.name,y.name));recipesList.innerHTML=a.map(r=>`<div class="card"><span class="tag">${esc(r.type)}</span><h3>${esc(r.name)}</h3><p class="muted">${r.people} personas · ${r.ingredients.length} ingredientes</p><p><b>${recipePoints(r).toFixed(1)} puntos por persona</b></p><button onclick="editRecipe('${r.id}')">Editar</button> <button onclick="addFrozen('${r.id}')">❄️ Congelar</button></div>`).join("")||"<div class='card'>No hay recetas.</div>"}
+function assignOpen(k){pkey=k;let [di,si]=k.split("_");if(+si===7){assignTitle.textContent="Asignar deporte";ai.innerHTML=D[di]+" · Deporte";as.innerHTML="<option value=''>— Sin deporte —</option>"+sports.slice().sort((a,b)=>alpha(a.cat,b.cat)||alpha(a.name,b.name)).map(s=>`<option value="${s.id}">${esc(s.cat)} · ${esc(s.name)}</option>`).join("");let sv=week[k],sidv=typeof sv==="object"?sv.sportId:sv;as.value=sidv||"";ai.insertAdjacentHTML("afterend",`<label id="sportMinLabel">Duración (minutos)</label><input id="sportMinutes" type="number" min="1" step="1" value="${typeof sv==="object"?sv.minutes:30}">`)}else{assignTitle.textContent="Asignar receta";ai.textContent=D[di]+" · "+S[si];let allowed=si==3?recipes.filter(r=>r.type===MAINC[+di]):recipes;as.innerHTML="<option value=''>— Vacío —</option>"+allowed.slice().sort((a,b)=>alpha(a.type,b.type)||alpha(a.name,b.name)).map(r=>`<option value="${r.id}">${esc(r.type)} · ${esc(r.name)}</option>`).join("");as.value=week[k]||""}assignModal.classList.add("show")}
+function closeAssign(){let old=document.getElementById("sportMinLabel");if(old)old.nextElementSibling?.remove();old?.remove();assignModal.classList.remove("show")}
+function assign(){let [di,si]=pkey.split("_");if(+si===7){if(as.value){week[pkey]={sportId:as.value,minutes:Math.max(1,+document.getElementById("sportMinutes").value||30)}}else delete week[pkey]}else{as.value?week[pkey]=as.value:delete week[pkey]}save();closeAssign();renderWeek();points()}
+function base(u){return u==="kg"?["g",1000]:u==="l"?["ml",1000]:u==="docenas"?["unidades",12]:[u,1]}
+function shopping(){let m={};Object.values(week).forEach((id,k)=>{let r=recipes.find(a=>a.id===id);if(!r)return;r.ingredients.forEach(i=>{let f=foods.find(a=>a.id===i.foodId);if(!f)return;let g=foodGrams(i,f)/r.people;let unit=f.density&&["ml","l"].includes(i.unit)?i.unit:"g";let key=f.id+"|"+unit;m[key]??={name:f.name,unit,qty:0};m[key].qty+=unit==="g"?g:(g/(f.density||1));})});shop.innerHTML=Object.values(m).sort((a,b)=>alpha(a.name,b.name)).map(a=>`<li>☐ <b>${esc(a.name)}</b> — ${Math.round(a.qty*100)/100} ${a.unit}</li>`).join("")||"<li>No hay ingredientes.</li>"}
 function saveWeek(){let n=prompt("Nombre de la semana:",new Date().toLocaleDateString("es-ES"));if(n){history.unshift({id:crypto.randomUUID(),name:n,date:new Date().toISOString(),week:{...week}});save();renderHistory();alert("Semana guardada.")}}
+function clearWeek(){if(confirm("¿Vaciar la semana?")){week={};save();renderWeek();points()}}
 function renderHistory(){historyList.innerHTML=history.map(h=>`<div class="card"><b>${esc(h.name)}</b><p class="muted">${new Date(h.date).toLocaleDateString("es-ES")}</p><button onclick="loadWeek('${h.id}')">Recuperar</button></div>`).join("")||"<div class='card muted'>No hay semanas guardadas.</div>"}
-function loadWeek(id){let h=history.find(a=>a.id==id);if(h){week={...h.week};save();renderWeek();show("week")}}
+function loadWeek(id){let h=history.find(a=>a.id===id);if(h){week={...h.week};save();renderWeek();show("week")}}
 function addFrozen(id){frecipe.value=id||recipes[0]?.id||"";fcount.value=1;fservings.value=1;freezerModal.classList.add("show")}
 function saveFrozen(){freezer.push({id:crypto.randomUUID(),recipeId:frecipe.value,count:+fcount.value||1,servings:+fservings.value||1});save();closeFrozen();renderFreezer()}
 function closeFrozen(){freezerModal.classList.remove("show")}
-function renderFreezer(){freezerList.innerHTML=freezer.map(f=>{let r=recipes.find(a=>a.id==f.recipeId);return `<div class="card"><b>${esc(r?.name||"Receta")}</b><p>${f.count} tupper(s) · ${f.servings} comensal(es) por tupper</p><button onclick="removeFrozen('${f.id}')">Borrar</button></div>`}).join("")||"<div class='card muted'>No hay congelados.</div>";frecipe.innerHTML=recipes.map(r=>`<option value="${r.id}">${esc(r.name)}</option>`).join("")}
-function removeFrozen(id){freezer=freezer.filter(a=>a.id!=id);save();renderFreezer()}
-function points(){budget.value=settings.budget;exercise.value=settings.exercise;let rows=D.map((d,di)=>{let p=0;for(let si=0;si<S.length;si++){let r=recipes.find(a=>a.id==week[di+"_"+si]);if(r)r.ingredients.forEach(i=>{let [u,f]=base(i.unit);if(u=="g")p+=i.qty*f/r.people/50})}return `<tr><td>${d}</td><td>${p.toFixed(1)}</td><td>${settings.budget}</td><td>${di==(new Date().getDay()+6)%7?settings.exercise:0}</td></tr>`}).join("");pointsTable.innerHTML=`<table style="width:100%"><tr><th>Día</th><th>Alimentos*</th><th>Asignados</th><th>Ejercicio</th></tr>${rows}</table><p class="muted">*Estimación provisional. En la siguiente versión conectaremos el cálculo con la fórmula WW que quieras utilizar; no se presenta como cálculo oficial.</p>`}
-function cloudPayload(){return {recipes,week,history,freezer,settings}}
-function hasLocalData(){return recipes.length||Object.keys(week).length||history.length||freezer.length}
-function connectCloud(){
-  const url=surl.value.trim(), key=skey.value.trim();
-  if(!url||!key){cloudMsg.textContent="Falta la URL o la clave pública.";return}
-  localStorage.setItem("supabase_url",url); localStorage.setItem("supabase_key",key);
-  try{supabaseClient=supabase.createClient(url,key);cloudMsg.textContent="Conexión preparada. Ahora inicia sesión o crea tu cuenta.";}
-  catch(e){cloudMsg.textContent="No se pudo preparar la conexión: "+e.message}
-}
-async function signUpCloud(){
-  if(!supabaseClient){connectCloud(); if(!supabaseClient)return}
-  const email=emailEl().value.trim(), password=passwordEl().value;
-  if(!email||!password){authMsg.textContent="Escribe correo y contraseña.";return}
-  const {data,error}=await supabaseClient.auth.signUp({email,password});
-  if(error){authMsg.textContent="Error: "+error.message;return}
-  cloudUser=data.user; authMsg.textContent=data.session?"Cuenta creada y sesión iniciada.":"Cuenta creada. Si te pide confirmar el correo, hazlo y después inicia sesión.";
-  if(data.session) await syncNow();
-}
-async function signInCloud(){
-  if(!supabaseClient){connectCloud(); if(!supabaseClient)return}
-  const email=emailEl().value.trim(), password=passwordEl().value;
-  if(!email||!password){authMsg.textContent="Escribe correo y contraseña.";return}
-  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
-  if(error){authMsg.textContent="Error: "+error.message;return}
-  cloudUser=data.user; authMsg.textContent="Sesión iniciada: "+cloudUser.email; await syncNow();
-}
-async function signOutCloud(){if(supabaseClient) await supabaseClient.auth.signOut();cloudUser=null;authMsg.textContent="Sesión cerrada."}
-function emailEl(){return document.getElementById("email")}
-function passwordEl(){return document.getElementById("password")}
-async function syncNow(){
-  if(!supabaseClient){connectCloud(); if(!supabaseClient)return}
-  const {data:{user},error:ue}=await supabaseClient.auth.getUser();
-  if(ue||!user){authMsg.textContent="Primero inicia sesión.";return}
-  cloudUser=user;
-  const {data,error}=await supabaseClient.from("app_data").select("payload,updated_at").eq("user_id",user.id).maybeSingle();
-  if(error){cloudMsg.textContent="Error al leer Supabase: "+error.message;return}
-  if(!data){
-    const {error:ie}=await supabaseClient.from("app_data").insert({user_id:user.id,payload:cloudPayload()});
-    if(ie){cloudMsg.textContent="Error al guardar en Supabase: "+ie.message;return}
-    cloudMsg.textContent="Sincronización activada. Tus datos locales se han subido a la nube.";
-  }else{
-    const remote=data.payload||{};
-    recipes=remote.recipes||[];week=remote.week||{};history=remote.history||[];freezer=remote.freezer||[];settings=remote.settings||{budget:22,exercise:0};
-    save(); renderWeek();renderRecipes();renderHistory();renderFreezer();initCloud();shopping();points();
-    cloudMsg.textContent="Datos descargados de la nube. Última actualización: "+new Date(data.updated_at).toLocaleString("es-ES");
+function renderFreezer(){freezerList.innerHTML=freezer.map(f=>{let r=recipes.find(a=>a.id===f.recipeId);return `<div class="card"><b>${esc(r?.name||"Receta")}</b><p>${f.count} tupper(s) · ${f.servings} comensal(es) por tupper</p><button onclick="removeFrozen('${f.id}')">Borrar</button></div>`}).join("")||"<div class='card muted'>No hay congelados.</div>";frecipe.innerHTML=recipes.map(r=>`<option value="${r.id}">${esc(r.name)}</option>`).join("")}
+function removeFrozen(id){freezer=freezer.filter(a=>a.id!==id);save();renderFreezer()}
+function defaultBankResetIfNeeded(){
+  const k=currentWeekKey();
+  if(settings.weekKey!==k){
+    settings.weekKey=k;
+    settings.weekBankStart=Math.min(15,settings.bank||0);
+    settings.bankUse=[0,0,0,0,0,0,0];
+    settings.bankUsed=0;
+    settings.bank=settings.weekBankStart;
+    save();
   }
 }
-async function pushCloud(){
-  if(!supabaseClient)return;
-  const {data:{user}}=await supabaseClient.auth.getUser(); if(!user)return;
-  const {error}=await supabaseClient.from("app_data").upsert({user_id:user.id,payload:cloudPayload(),updated_at:new Date().toISOString()},{onConflict:"user_id"});
-  if(error) cloudMsg.textContent="Error al sincronizar: "+error.message;
-  else cloudMsg.textContent="Sincronizado con la nube.";
+function dayFoodPoints(di){let p=0;for(let si=0;si<7;si++){let r=recipes.find(a=>a.id===week[di+"_"+si]);if(r)p+=recipePoints(r)}return p}
+function daySportPoints(di){let sv=week[di+"_7"],s=sports.find(a=>a.id===(typeof sv==="object"?sv.sportId:sv));if(!s)return 0;let mins=typeof sv==="object"?(+sv.minutes||30):30;return s.points30*mins/30}
+function weekEarned(){
+  let e=0;
+  for(let di=0;di<7;di++){
+    const surplus=settings.budget+daySportPoints(di)-dayFoodPoints(di);
+    e+=Math.max(0,Math.min(4,surplus));
+  }
+  return e;
 }
-const _save=save; save=function(){_save(); if(supabaseClient && cloudUser) pushCloud()}
-function initCloud(){
-  const u=localStorage.getItem("supabase_url"),k=localStorage.getItem("supabase_key");
-  if(u)surl.value=u;if(k)skey.value=k;
-  if(u&&k){try{supabaseClient=supabase.createClient(u,k);supabaseClient.auth.getUser().then(({data})=>{if(data.user){cloudUser=data.user;authMsg.textContent="Sesión activa: "+data.user.email;}})}catch(e){}}
+function totalBankUse(){return (settings.bankUse||[]).reduce((a,b)=>a+(+b||0),0)}
+function recomputeBank(){
+  defaultBankResetIfNeeded();
+  let earned=weekEarned(), used=totalBankUse();
+  let available=Math.min(15,Math.max(0,(settings.weekBankStart||0)+earned));
+  if(used>10){
+    // trim from the end if an imported/manual value exceeds the weekly limit
+    let excess=used-10;
+    for(let i=6;i>=0&&excess>0;i--){let n=Math.min(excess,+settings.bankUse[i]||0);settings.bankUse[i]-=n;excess-=n}
+    used=totalBankUse();
+  }
+  settings.bankUsed=used;
+  settings.bank=Math.max(0,available-used);
+  save();
 }
-function exportData(){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([localStorage.getItem("menu4")],{type:"application/json"}));a.download="mi-menu-datos.json";a.click()}
-function importData(e){let f=e.target.files[0],r=new FileReader();r.onload=()=>{localStorage.setItem("menu4",r.result);location.reload()};r.readAsText(f)}
-recipeModal.insertAdjacentHTML("beforebegin",`<div id="freezerModal" class="modal"><div class="box"><h2>Añadir congelado</h2><label>Receta</label><select id="frecipe"></select><label>Número de tuppers</label><input id="fcount" type="number" value="1"><label>Comensales por tupper</label><input id="fservings" type="number" value="1"><div class="row" style="margin-top:10px"><button class="primary" onclick="saveFrozen()">Guardar</button><button onclick="closeFrozen()">Cancelar</button></div></div></div>`);
-renderWeek();renderRecipes();renderHistory();renderFreezer();initCloud();
-</script></body></html>
+function setBankUse(di,val){
+  defaultBankResetIfNeeded();
+  let n=Math.max(0,Math.floor(+val||0));
+  let current=(settings.bankUse||[]).reduce((a,b)=>a+(+b||0),0)-(+(settings.bankUse||[])[di]||0);
+  let available=Math.min(15,Math.max(0,(settings.weekBankStart||0)+weekEarned()))-current;
+  n=Math.min(n,10-current,Math.max(0,available));
+  settings.bankUse[di]=n;
+  recomputeBank();
+  points();
+}
+function points(){
+  defaultBankResetIfNeeded();
+  recomputeBank();
+  budgetKpi.textContent=settings.budget;
+  bankKpi.textContent=settings.bank;
+  bankUsedKpi.textContent=(settings.bankUsed||0)+"/10";
+  let rows=D.map((d,di)=>{
+    let food=dayFoodPoints(di),sport=daySportPoints(di),use=+(settings.bankUse||[])[di]||0;
+    let before=settings.budget+sport-food;
+    let balance=before+use;
+    let saved=Math.max(0,Math.min(4,before));
+    return `<tr><td><b>${d}</b></td><td>${settings.budget.toFixed(0)}</td><td>${sport.toFixed(1)}</td><td><input type="number" min="0" max="10" step="1" value="${use}" onchange="setBankUse(${di},this.value)" style="width:70px"></td><td>${food.toFixed(1)}</td><td class="${balance>=0?'ok':'bad'}">${balance.toFixed(1)}</td><td>${saved.toFixed(1)}</td></tr>`
+  }).join("");
+  pointsTable.innerHTML=`<table><tr><th>Día</th><th>Permitidos</th><th>Deporte</th><th>Banco usado</th><th>Consumidos</th><th>Saldo</th><th>Ahorro</th></tr>${rows}</table>
+  <p class="muted">Banco: máximo 15 puntos acumulados. Se pueden ahorrar hasta 4 puntos por día. Se pueden gastar hasta 10 puntos del banco durante la semana sábado → viernes. El banco sobrante se arrastra a la semana siguiente.</p>`;
+  renderWeek();
+}
+function renderSports(){let q=norm(sportSearch.value),a=sports.filter(s=>!q||norm(s.name).includes(q)||norm(s.cat).includes(q)).sort((x,y)=>alpha(x.cat,y.cat)||alpha(x.name,y.name));sportsList.innerHTML=a.map(s=>`<div class="card"><span class="tag">${esc(s.cat)}</span><h3>${esc(s.name)}</h3><p><b>${s.points30} puntos / 30 min</b></p><button onclick="editSport('${s.id}')">Editar</button></div>`).join("")}
+function editSport(id){let s=sports.find(a=>a.id===id);sid.value=s?.id||"";sn.value=s?.name||"";scat.value=s?.cat||"Cardio";sp.value=s?.points30??2;st.textContent=s?"Editar actividad":"Nueva actividad";sportModal.classList.add("show")}
+function saveSport(){if(!sn.value.trim())return;let s={id:sid.value||crypto.randomUUID(),name:sn.value.trim(),cat:scat.value,points30:+sp.value||0};let i=sports.findIndex(a=>a.id===s.id);i<0?sports.push(s):sports[i]=s;save();closeSport();renderSports();renderWeek()}
+function closeSport(){sportModal.classList.remove("show")}
+function cloudPayload(){return {version:6,recipes,week,history,freezer,foods,sports,settings}}
+function connectCloud(){let url=surl.value.trim(),key=skey.value.trim();if(!url||!key){cloudMsg.textContent="Falta la URL o la clave pública.";return}localStorage.setItem("supabase_url",url);localStorage.setItem("supabase_key",key);try{supabaseClient=supabase.createClient(url,key);cloudMsg.textContent="Conexión preparada. Ahora inicia sesión o sincroniza."}catch(e){cloudMsg.textContent="No se pudo preparar la conexión: "+e.message}}
+async function signUpCloud(){if(!supabaseClient){connectCloud();if(!supabaseClient)return}let e=email.value.trim(),p=password.value;if(!e||!p){authMsg.textContent="Escribe correo y contraseña.";return}let {data,error}=await supabaseClient.auth.signUp({email:e,password:p});if(error){authMsg.textContent="Error: "+error.message;return}cloudUser=data.user;authMsg.textContent=data.session?"Cuenta creada y sesión iniciada.":"Cuenta creada. Confirma el correo y después inicia sesión.";if(data.session)await syncNow()}
+async function signInCloud(){if(!supabaseClient){connectCloud();if(!supabaseClient)return}let e=email.value.trim(),p=password.value;if(!e||!p){authMsg.textContent="Escribe correo y contraseña.";return}let {data,error}=await supabaseClient.auth.signInWithPassword({email:e,password:p});if(error){authMsg.textContent="Error: "+error.message;return}cloudUser=data.user;authMsg.textContent="Sesión iniciada: "+cloudUser.email;await syncNow()}
+async function signOutCloud(){if(supabaseClient)await supabaseClient.auth.signOut();cloudUser=null;authMsg.textContent="Sesión cerrada."}
+async function syncNow(){if(!supabaseClient){connectCloud();if(!supabaseClient)return}let {data:{user},error:ue}=await supabaseClient.auth.getUser();if(ue||!user){authMsg.textContent="Primero inicia sesión.";return}cloudUser=user;let {data,error}=await supabaseClient.from("app_data").select("payload,updated_at").eq("user_id",user.id).maybeSingle();if(error){cloudMsg.textContent="Error al leer Supabase: "+error.message;return}if(!data){let {error:ie}=await supabaseClient.from("app_data").insert({user_id:user.id,payload:cloudPayload()});if(ie){cloudMsg.textContent="Error al guardar en Supabase: "+ie.message;return}cloudMsg.textContent="Sincronización activada. Tus datos locales se han subido a la nube."}else{let r=data.payload||{};recipes=r.recipes||recipes;week=r.week||week;history=r.history||history;freezer=r.freezer||freezer;foods=r.foods?.length?r.foods:foods;sports=r.sports?.length?r.sports:sports;settings={...settings,...(r.settings||{})};save();renderAll();cloudMsg.textContent="Datos descargados de la nube. Última actualización: "+new Date(data.updated_at).toLocaleString("es-ES")}}
+async function pushCloud(){if(!supabaseClient)return;let {data:{user}}=await supabaseClient.auth.getUser();if(!user)return;let {error}=await supabaseClient.from("app_data").upsert({user_id:user.id,payload:cloudPayload(),updated_at:new Date().toISOString()},{onConflict:"user_id"});if(error)cloudMsg.textContent="Error al sincronizar: "+error.message;else cloudMsg.textContent="Sincronizado con la nube."}
+function initCloud(){let u=localStorage.getItem("supabase_url"),k=localStorage.getItem("supabase_key");if(u)surl.value=u;if(k)skey.value=k;if(u&&k){try{supabaseClient=supabase.createClient(u,k);supabaseClient.auth.getUser().then(({data})=>{if(data.user){cloudUser=data.user;authMsg.textContent="Sesión activa: "+data.user.email}})}catch(e){}}}
+function exportData(){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));a.download="mi-menu-v6-datos.json";a.click()}
+function importData(e){let f=e.target.files[0],r=new FileReader();r.onload=()=>{localStorage.setItem("menu6",r.result);location.reload()};r.readAsText(f)}
+function renderAll(){populateCats();renderWeek();renderFoods();renderRecipes();renderHistory();renderFreezer();renderSports();shopping();points()}
+document.body.insertAdjacentHTML("beforeend",`<div id="freezerModal" class="modal"><div class="box"><h2>Añadir congelado</h2><label>Receta</label><select id="frecipe"></select><label>Número de tuppers</label><input id="fcount" type="number" value="1"><label>Comensales por tupper</label><input id="fservings" type="number" value="1"><div class="row" style="margin-top:10px"><button class="primary" onclick="saveFrozen()">Guardar</button><button onclick="closeFrozen()">Cancelar</button></div></div></div>`);
+populateCats();renderAll();initCloud();
+</script>
+</body></html>
