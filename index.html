@@ -26,7 +26,7 @@ table{border-collapse:collapse;width:100%}th,td{padding:7px;border-bottom:1px so
 </style>
 </head>
 <body>
-<header><h1>🍲 Mi Menú</h1><p>V6.2 · menú · alimentos · recetas · deporte · puntos clásicos</p></header>
+<header><h1>🍲 Mi Menú</h1><p>V6.3 · menú · alimentos · recetas · deporte · puntos clásicos</p></header>
 <nav id="nav"><button data-tab="week">📅 Semana</button><button data-tab="foods">🥕 Alimentos</button><button data-tab="recipes">📚 Recetas</button><button data-tab="freezer">❄️ Congelador</button><button data-tab="history">🗂️ Semanas</button><button data-tab="shopping">🛒 Compra</button><button data-tab="sport">🏃 Deporte</button><button data-tab="points">🎯 Puntos</button><button data-tab="settings">⚙️ Datos</button></nav>
 <main>
 <section id="week" class="view on">
@@ -121,7 +121,7 @@ if(!state){
     {id:"bike",name:"Bicicleta estática",cat:"Cardio",points30:2},
     {id:"elliptical",name:"Elíptica",cat:"Cardio",points30:2},
     {id:"strength",name:"Entrenamiento de fuerza",cat:"Gimnasio",points30:2},
-    {id:"circuit",name:"Circuito de gimnasio",cat:"Gimnasio",points30:2.5},
+    {id:"circuit",name:"Circuito de gimnasio",cat:"Gimnasio",points30:2},
     {id:"homecardio",name:"Cardio en casa",cat:"Cardio",points30:2}
   ],settings:{budget:(raw.settings&&raw.settings.budget)||22,bank:0,bankUsed:0,weekKey:null,weekBankStart:0,bankUse:[0,0,0,0,0,0,0]}};
   // Migrate legacy recipes without losing them. Ingredients are matched to the seed where possible.
@@ -142,7 +142,7 @@ state.week=state.week&&typeof state.week==="object"?state.week:{};
 state.history=Array.isArray(state.history)?state.history:[];
 state.freezer=Array.isArray(state.freezer)?state.freezer:[];
 state.foods=Array.isArray(state.foods)&&state.foods.length?state.foods:SEED.slice();
-state.sports=Array.isArray(state.sports)?state.sports:[{id:"walk",name:"Caminar",cat:"Caminar",points30:1},{id:"treadmill",name:"Cinta",cat:"Cardio",points30:2},{id:"bike",name:"Bicicleta estática",cat:"Cardio",points30:2},{id:"elliptical",name:"Elíptica",cat:"Cardio",points30:2},{id:"strength",name:"Entrenamiento de fuerza",cat:"Gimnasio",points30:2},{id:"circuit",name:"Circuito de gimnasio",cat:"Gimnasio",points30:2.5},{id:"homecardio",name:"Cardio en casa",cat:"Cardio",points30:2}];
+state.sports=Array.isArray(state.sports)?state.sports:[{id:"walk",name:"Caminar",cat:"Caminar",points30:1},{id:"treadmill",name:"Cinta",cat:"Cardio",points30:2},{id:"bike",name:"Bicicleta estática",cat:"Cardio",points30:2},{id:"elliptical",name:"Elíptica",cat:"Cardio",points30:2},{id:"strength",name:"Entrenamiento de fuerza",cat:"Gimnasio",points30:2},{id:"circuit",name:"Circuito de gimnasio",cat:"Gimnasio",points30:2},{id:"homecardio",name:"Cardio en casa",cat:"Cardio",points30:2}];
 state.settings={budget:22,bank:0,bankUsed:0,weekKey:null,weekBankStart:0,bankUse:[0,0,0,0,0,0,0],...(state.settings||{})};
 state.settings.bankUse=Array.isArray(state.settings.bankUse)?state.settings.bankUse:[0,0,0,0,0,0,0];
 let recipes=state.recipes,week=state.week,menuHistory=state.history,freezer=state.freezer,foods=state.foods,sports=state.sports,settings=state.settings;
@@ -157,11 +157,11 @@ function show(id){document.querySelectorAll(".view").forEach(v=>v.classList.togg
 function currentWeekKey(){let now=new Date(),day=now.getDay();let diff=(day===6)?0:day+1;let d=new Date(now);d.setHours(0,0,0,0);d.setDate(d.getDate()-diff);return d.toISOString().slice(0,10)}
 function weekDates(){let k=currentWeekKey(),d=new Date(k+"T00:00:00");return D.map((_,i)=>{let x=new Date(d);x.setDate(d.getDate()+i);return x})}
 function renderWeek(){let dates=weekDates();weekLabel.textContent=dates[0].toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit"})+" → "+dates[6].toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"});
-days.innerHTML=D.map((d,di)=>`<div class="day"><h3>${d}<br><small>${di===0?"Guisos":di===1?"Asados":di===2?"Guisos":di===3?"Pasta":di===4?"Cremas":di===5?"Arroces":"Verduras"}</small></h3>${S.map((s,si)=>{if(si===7){let sv=week[di+"_"+si], sp=sports.find(a=>a.id===(typeof sv==="object"?sv.sportId:sv));let mins=typeof sv==="object"?(+sv.minutes||30):30;return `<div class="slot sport" onclick="assignOpen('${di}_${si}')"><small>🏃 ${s}</small><b class="${sp?'':'empty'}">${sp?esc(sp.name):"Añadir…"}</b>${sp?`<small>${mins} min · ${(sp.points30*mins/30).toFixed(1)} pt</small>`:""}</div>`}
+days.innerHTML=D.map((d,di)=>`<div class="day"><h3>${d}<br><small>${di===0?"Guisos":di===1?"Asados":di===2?"Guisos":di===3?"Pasta":di===4?"Cremas":di===5?"Arroces":"Verduras"}</small></h3>${S.map((s,si)=>{if(si===7){let sv=week[di+"_"+si], sp=sports.find(a=>a.id===(typeof sv==="object"?sv.sportId:sv));let mins=typeof sv==="object"?(+sv.minutes||30):30;return `<div class="slot sport" onclick="assignOpen('${di}_${si}')"><small>🏃 ${s}</small><b class="${sp?'':'empty'}">${sp?esc(sp.name):"Añadir…"}</b>${sp?`<small>${mins} min · ${Math.max(0,Math.round(sp.points30*mins/30))} pt</small>`:""}</div>`}
 let r=recipes.find(r=>r.id===week[di+"_"+si]);return `<div class="slot" onclick="assignOpen('${di}_${si}')"><small>${s}</small><b class="${r?'':'empty'}">${r?esc(r.name):"Añadir…"}</b>${r?`<small>${recipePoints(r).toFixed(1)} pt</small>`:""}</div>`}).join("")}</div>`).join("");
 weekSummary.innerHTML=weekSummaryHtml();
 }
-function weekSummaryHtml(){let totalC=0,totalS=0,totalB=0;for(let di=0;di<7;di++){let c=dayFoodPoints(di);totalC+=c;totalS+=daySportPoints(di)}return `<div class="kpi"><div><div class="muted">Consumo semanal</div><div class="big">${totalC.toFixed(1)}</div></div><div><div class="muted">Bonus deporte</div><div class="big">${totalS.toFixed(1)}</div></div><div><div class="muted">Banco</div><div class="big">${settings.bank}</div></div><div><div class="muted">Máx. banco</div><div class="big">15</div></div></div>`}
+function weekSummaryHtml(){let totalC=0,totalS=0,totalB=0;for(let di=0;di<7;di++){let c=dayFoodPoints(di);totalC+=c;totalS+=daySportPoints(di)}return `<div class="kpi"><div><div class="muted">Consumo semanal</div><div class="big">${Math.round(totalC)}</div></div><div><div class="muted">Bonus deporte</div><div class="big">${Math.round(totalS)}</div></div><div><div class="muted">Banco</div><div class="big">${settings.bank}</div></div><div><div class="muted">Máx. banco</div><div class="big">15</div></div></div>`}
 function populateCats(){let fhtml=`<option value="">Todas</option>`+FOODC.map(c=>`<option>${c}</option>`).join("");foodCat.innerHTML=fhtml;fcat.innerHTML=FOODC.map(c=>`<option>${c}</option>`).join("");recipeCat.innerHTML=`<option value="">Todas</option>`+MEALC.map(c=>`<option>${c}</option>`).join("");rtype.innerHTML=MEALC.map(c=>`<option>${c}</option>`).join("")}
 async function searchUSDA(){
   const q=foodSearch.value.trim();
@@ -191,10 +191,10 @@ function openFoodEditor(){fid.value="";fcat.value=FOODC[0];fn.value="";fk.value=
 function editFood(id){let f=foods.find(a=>a.id===id);if(!f)return;fid.value=f.id;fcat.value=f.cat;fn.value=f.name;fk.value=f.kcal;ff.value=f.fat;ffi.value=f.fiber;fd.value=f.density||1;fu.value=f.unitg||"";ft.textContent="Editar alimento";foodModal.classList.add("show")}
 function saveFood(){if(!fn.value.trim())return alert("Falta el nombre.");let f={id:fid.value||crypto.randomUUID(),cat:fcat.value,name:fn.value.trim(),kcal:+fk.value||0,fat:+ff.value||0,fiber:+ffi.value||0,density:+fd.value||1,unitg:+fu.value||null,source:"user"};let i=foods.findIndex(a=>a.id===f.id);i<0?foods.push(f):foods[i]=f;save();closeFood();renderFoods()}
 function closeFood(){foodModal.classList.remove("show")}
-function foodPoints100(f){return f.kcal/50+f.fat/12-Math.min(f.fiber,4)/5}
+function foodPoints100(f){return Math.max(0,Math.round(f.kcal/50+f.fat/12-Math.min(f.fiber,4)/5))}
 function foodGrams(i,f){let q=+i.qty||0,u=i.unit||"g";if(u==="kg")return q*1000;if(u==="ml")return q*(f.density||1);if(u==="l")return q*1000*(f.density||1);if(u==="unidades")return q*(f.unitg||100);if(u==="docenas")return q*12*(f.unitg||100);return q}
 function ingredientNutrition(i){let f=foods.find(a=>a.id===i.foodId);if(!f)return null;let g=foodGrams(i,f),factor=g/100;return {f,g,kcal:f.kcal*factor,fat:f.fat*factor,fiber:f.fiber*factor}}
-function recipePoints(r){let kcal=0,fat=0,fiber=0;(r.ingredients||[]).forEach(i=>{let n=ingredientNutrition(i);if(n){kcal+=n.kcal/r.people;fat+=n.fat/r.people;fiber+=n.fiber/r.people}});return kcal/50+fat/12-Math.min(fiber,4)/5}
+function recipePoints(r){let kcal=0,fat=0,fiber=0;(r.ingredients||[]).forEach(i=>{let n=ingredientNutrition(i);if(n){kcal+=n.kcal/r.people;fat+=n.fat/r.people;fiber+=n.fiber/r.people}});return Math.max(0,Math.round(kcal/50+fat/12-Math.min(fiber,4)/5))}
 function editRecipe(id){let r=recipes.find(a=>a.id===id);rid.value=r?.id||"";rn.value=r?.name||"";rtype.innerHTML=MEALC.map(t=>`<option>${t}</option>`).join("");rtype.value=r?.type||"Guisos";rp.value=r?.people||4;ings.innerHTML="";(r?.ingredients?.length?r.ingredients:[{}]).forEach(addIng);steps.value=r?.steps||"";rt.textContent=r?"Editar receta":"Nueva receta";recipeModal.classList.add("show")}
 function addIng(a={}){let e=document.createElement("div");e.className="ing";let opts=foods.slice().sort((x,y)=>alpha(x.cat,y.cat)||alpha(x.name,y.name)).map(f=>`<option value="${f.id}">${esc(f.cat)} · ${esc(f.name)}</option>`).join("");e.innerHTML=`<select class="if">${opts}</select><input class="iq" type="number" step=".01" value="${a.qty??""}" placeholder="Cantidad"><select class="iu"><option>g</option><option>kg</option><option>ml</option><option>l</option><option>unidades</option><option>docenas</option></select><button onclick="this.parentElement.remove()">×</button>`;ings.appendChild(e);if(a.foodId)e.querySelector(".if").value=a.foodId;e.querySelector(".iu").value=a.unit||"g"}
 function saveRecipe(){let ing=[...document.querySelectorAll(".ing")].map(e=>({foodId:e.querySelector(".if").value,qty:+e.querySelector(".iq").value,unit:e.querySelector(".iu").value})).filter(a=>a.foodId&&a.qty>0);if(!rn.value||!ing.length)return alert("Falta nombre o ingredientes.");let r={id:rid.value||crypto.randomUUID(),name:rn.value.trim(),type:rtype.value,people:+rp.value||1,ingredients:ing,steps:steps.value};let i=recipes.findIndex(a=>a.id===r.id);i<0?recipes.push(r):recipes[i]=r;save();closeM();renderRecipes();renderWeek();shopping()}
@@ -271,13 +271,13 @@ function points(){
     let before=settings.budget+sport-food;
     let balance=before+use;
     let saved=Math.max(0,Math.min(4,before));
-    return `<tr><td><b>${d}</b></td><td>${settings.budget.toFixed(0)}</td><td>${sport.toFixed(1)}</td><td><input type="number" min="0" max="10" step="1" value="${use}" onchange="setBankUse(${di},this.value)" style="width:70px"></td><td>${food.toFixed(1)}</td><td class="${balance>=0?'ok':'bad'}">${balance.toFixed(1)}</td><td>${saved.toFixed(1)}</td></tr>`
+    return `<tr><td><b>${d}</b></td><td>${settings.budget.toFixed(0)}</td><td>${Math.round(sport)}</td><td><input type="number" min="0" max="10" step="1" value="${use}" onchange="setBankUse(${di},this.value)" style="width:70px"></td><td>${Math.round(food)}</td><td class="${balance>=0?'ok':'bad'}">${Math.round(balance)}</td><td>${Math.round(saved)}</td></tr>`
   }).join("");
   pointsTable.innerHTML=`<table><tr><th>Día</th><th>Permitidos</th><th>Deporte</th><th>Banco usado</th><th>Consumidos</th><th>Saldo</th><th>Ahorro</th></tr>${rows}</table>
   <p class="muted">Banco: máximo 15 puntos acumulados. Se pueden ahorrar hasta 4 puntos por día. Se pueden gastar hasta 10 puntos del banco durante la semana sábado → viernes. El banco sobrante se arrastra a la semana siguiente.</p>`;
   renderWeek();
 }
-function renderSports(){let q=norm(sportSearch.value),a=sports.filter(s=>!q||norm(s.name).includes(q)||norm(s.cat).includes(q)).sort((x,y)=>alpha(x.cat,y.cat)||alpha(x.name,y.name));sportsList.innerHTML=a.map(s=>`<div class="card"><span class="tag">${esc(s.cat)}</span><h3>${esc(s.name)}</h3><p><b>${s.points30} puntos / 30 min</b></p><button onclick="editSport('${s.id}')">Editar</button></div>`).join("")}
+function renderSports(){let q=norm(sportSearch.value),a=sports.filter(s=>!q||norm(s.name).includes(q)||norm(s.cat).includes(q)).sort((x,y)=>alpha(x.cat,y.cat)||alpha(x.name,y.name));sportsList.innerHTML=a.map(s=>`<div class="card"><span class="tag">${esc(s.cat)}</span><h3>${esc(s.name)}</h3><p><b>${Math.round(s.points30)} puntos / 30 min</b></p><button onclick="editSport('${s.id}')">Editar</button></div>`).join("")}
 function editSport(id){let s=sports.find(a=>a.id===id);sid.value=s?.id||"";sn.value=s?.name||"";scat.value=s?.cat||"Cardio";sp.value=s?.points30??2;st.textContent=s?"Editar actividad":"Nueva actividad";sportModal.classList.add("show")}
 function saveSport(){if(!sn.value.trim())return;let s={id:sid.value||crypto.randomUUID(),name:sn.value.trim(),cat:scat.value,points30:+sp.value||0};let i=sports.findIndex(a=>a.id===s.id);i<0?sports.push(s):sports[i]=s;save();closeSport();renderSports();renderWeek()}
 function closeSport(){sportModal.classList.remove("show")}
