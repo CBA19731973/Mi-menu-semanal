@@ -147,6 +147,20 @@ let activeProfile=state.activeProfile||"Carlos";
 let profile=state.profiles[activeProfile];
 let recipes=state.recipes,week=profile.week,menuHistory=profile.history,freezer=profile.freezer,foods=state.foods,sports=state.sports,settings=profile.settings;
 let supabaseClient=null,cloudUser=null,pkey="";
+function save(){
+  // Mantiene sincronizadas las variables del perfil activo con el estado persistente.
+  profile.week=week;
+  profile.history=menuHistory;
+  profile.freezer=freezer;
+  profile.settings=settings;
+  state.profiles[activeProfile]=profile;
+  state.activeProfile=activeProfile;
+  state.recipes=recipes;
+  state.foods=foods;
+  state.sports=sports;
+  localStorage.setItem("menu6",JSON.stringify(state));
+  if(supabaseClient&&cloudUser) pushCloud();
+}
 function selectProfile(name,copyIfNew=true){
   name=name==="Cris"?"Cris":"Carlos";
   if(name!=="Carlos"&&copyIfNew){
