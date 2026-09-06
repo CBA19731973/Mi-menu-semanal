@@ -26,7 +26,7 @@ table{border-collapse:collapse;width:100%}th,td{padding:7px;border-bottom:1px so
 </style>
 </head>
 <body>
-<header><h1>🍲 Mi Menú</h1><p>V7.2 · Carlos y Cris · tu menú, tus puntos y todo en un solo lugar</p></header>
+<header><h1>🍲 Mi Menú</h1><p>V7.4 · Carlos y Cris · tu menú, tus puntos y todo en un solo lugar</p></header>
 <nav id="nav"><button data-tab="weekCarlos">📅 Semana Carlos</button><button data-tab="weekCris">📅 Semana Cris</button><button data-tab="foods">🥕 Alimentos</button><button data-tab="recipes">📚 Recetas</button><button data-tab="freezer">❄️ Congelador</button><button data-tab="history">🗂️ Semanas</button><button data-tab="shopping">🛒 Compra</button><button data-tab="sport">🏃 Deporte</button><button data-tab="pointsCarlos">🎯 Puntos Carlos</button><button data-tab="pointsCris">🎯 Puntos Cris</button><button data-tab="settings">⚙️ Datos</button></nav>
 <main>
 <section id="home" class="view on home">
@@ -108,7 +108,7 @@ table{border-collapse:collapse;width:100%}th,td{padding:7px;border-bottom:1px so
 </main>
 
 <div id="recipeModal" class="modal"><div class="box"><h2 id="rt">Nueva receta</h2><input id="rid" hidden><label>Nombre</label><input id="rn"><label>Clasificación</label><select id="rtype"></select><label>Personas de la receta</label><input id="rp" type="number" min="1" value="4"><label>Ingredientes</label><div id="ings"></div><button onclick="addIng()">+ Ingrediente</button><label>Elaboración</label><textarea id="steps"></textarea><div class="row" style="margin-top:10px"><button class="primary" onclick="saveRecipe()">Guardar</button><button onclick="closeM()">Cancelar</button></div></div></div>
-<div id="foodModal" class="modal"><div class="box"><h2 id="ft">Nuevo alimento</h2><input id="fid" hidden><label>Clasificación</label><select id="fcat"></select><label>Nombre</label><input id="fn"><div class="foodrow"><div><label>kcal / 100 g</label><input id="fk" type="number" step=".1"></div><div><label>grasa g</label><input id="ff" type="number" step=".1"></div><div><label>fibra g</label><input id="ffi" type="number" step=".1"></div></div><div class="foodrow"><div><label>Densidad g/ml</label><input id="fd" type="number" step=".001" value="1"></div><div><label>g por unidad</label><input id="fu" type="number" step=".1"></div><div></div></div><div class="row" style="margin-top:10px"><button class="primary" onclick="saveFood()">Guardar</button><button onclick="closeFood()">Cancelar</button></div></div></div>
+<div id="foodModal" class="modal"><div class="box"><h2 id="ft">Nuevo alimento</h2><input id="fid" hidden><label>Clasificación</label><select id="fcat"></select><label>Nombre</label><input id="fn"><div class="foodrow"><div><label>kcal / 100 g</label><input id="fk" type="number" step=".1"></div><div><label>grasa g</label><input id="ff" type="number" step=".1"></div><div><label>fibra g</label><input id="ffi" type="number" step=".1"></div></div><div class="foodrow"><div><label>Densidad g/ml</label><input id="fd" type="number" step=".001" value="1"></div><div><label>g por unidad</label><input id="fu" type="number" step=".1"></div><div><label>Puntos WW / 100 g</label><input id="fw" type="number" step="1" min="0" placeholder="Automático"></div></div><div class="row" style="margin-top:10px"><button class="primary" onclick="saveFood()">Guardar</button><button onclick="closeFood()">Cancelar</button></div></div></div>
 <div id="sportModal" class="modal"><div class="box"><h2 id="st">Nueva actividad</h2><input id="sid" hidden><label>Nombre</label><input id="sn"><label>Clasificación</label><select id="scat"><option>Cardio</option><option>Gimnasio</option><option>Caminar</option><option>Otros</option></select><label>Puntos bonus por 30 minutos</label><input id="sp" type="number" step=".1" min="0"><div class="row" style="margin-top:10px"><button class="primary" onclick="saveSport()">Guardar</button><button onclick="closeSport()">Cancelar</button></div></div></div>
 <div id="assignModal" class="modal"><div class="box"><h2 id="assignTitle">Asignar</h2><p id="ai" class="muted"></p><select id="as"></select><div class="row" style="margin-top:10px"><button class="primary" onclick="assign()">Asignar</button><button onclick="closeAssign()">Cancelar</button></div></div></div>
 
@@ -116,7 +116,7 @@ table{border-collapse:collapse;width:100%}th,td{padding:7px;border-bottom:1px so
 // Compatibilidad: referencias explícitas a los elementos HTML (evita depender de globals por id).
 const $=id=>document.getElementById(id);
 const nav=$("nav"),weekLabel=$("weekLabel"),days=$("days"),weekSummary=$("weekSummary"),profileName=$("profileName"),pointsProfileName=$("pointsProfileName");
-const foodCat=$("foodCat"),foodSearch=$("foodSearch"),foodsList=$("foodsList"),fcat=$("fcat"),fn=$("fn"),fk=$("fk"),ff=$("ff"),ffi=$("ffi"),fd=$("fd"),fu=$("fu"),fid=$("fid"),foodModal=$("foodModal"),ft=$("ft");
+const foodCat=$("foodCat"),foodSearch=$("foodSearch"),foodsList=$("foodsList"),fcat=$("fcat"),fn=$("fn"),fk=$("fk"),ff=$("ff"),ffi=$("ffi"),fd=$("fd"),fu=$("fu"),fw=$("fw"),fid=$("fid"),foodModal=$("foodModal"),ft=$("ft");
 const recipeCat=$("recipeCat"),search=$("search"),recipesList=$("recipesList"),rtype=$("rtype"),rn=$("rn"),rp=$("rp"),rid=$("rid"),ings=$("ings"),steps=$("steps"),recipeModal=$("recipeModal"),rt=$("rt");
 const freezerList=$("freezerList"),historyList=$("historyList"),shop=$("shop");
 const sportSearch=$("sportSearch"),sportsList=$("sportsList"),scat=$("scat"),sn=$("sn"),sp=$("sp"),sid=$("sid"),sportModal=$("sportModal"),st=$("st");
@@ -144,32 +144,49 @@ const defaultSports=[
 function clone(x){return JSON.parse(JSON.stringify(x));}
 function makeProfile(base){return {week:clone(base?.week||{}),history:clone(base?.history||[]),freezer:clone(base?.freezer||[]),settings:{budget:+(base?.settings?.budget||22),bank:+(base?.settings?.bank||0),bankUsed:0,weekKey:null,weekBankStart:0,bankUse:[0,0,0,0,0,0,0]}}}
 if(!state){
-  state={version:7,recipes:[],foods:SEED,sports:clone(defaultSports),profiles:{Carlos:makeProfile({settings:{budget:(raw.settings&&raw.settings.budget)||22},week:raw.week,history:raw.history,freezer:raw.freezer}),Cris:null}};
-  (raw.recipes||[]).forEach(r=>{state.recipes.push({...r,id:r.id||crypto.randomUUID(),ingredients:(r.ingredients||[]).map(i=>{let f=state.foods.find(a=>a.name.toLowerCase()===String(i.name||"").toLowerCase());return {foodId:f?.id||null,name:i.name,qty:i.qty,unit:i.unit}})});});
-  state.profiles.Cris=makeProfile(state.profiles.Carlos);
+  state={version:7.3,recipes:[],foods:SEED,sports:clone(defaultSports),profiles:{Carlos:makeProfile({settings:{budget:(raw.settings&&raw.settings.budget)||22},week:raw.week,history:raw.history,freezer:raw.freezer}),Cris:makeProfile({settings:{budget:(raw.settings&&raw.settings.budget)||22}})}};
+  (raw.recipes||[]).forEach(r=>{state.recipes.push({...r,id:r.id||crypto.randomUUID(),ingredients:(r.ingredients||[]).map(i=>{let f=state.foods.find(a=>norm(a.name)===norm(i.name||""));return {foodId:f?.id||null,name:f?.name||i.name,qty:i.qty,unit:i.unit}})});});
   state.activeProfile="Carlos";
 }else{
-  // Migrate V6/V6.4 single-profile data to Carlos + an initial copy for Cris.
+  // V7.3: los perfiles son totalmente independientes. Solo se conserva lo que ya tenga cada uno.
   if(!state.profiles){
     const old={week:state.week||{},history:state.history||[],freezer:state.freezer||[],settings:state.settings||{}};
-    state.profiles={Carlos:makeProfile(old),Cris:makeProfile(old)};
+    state.profiles={Carlos:makeProfile(old),Cris:makeProfile({settings:old.settings})};
     state.profiles.Carlos.settings={...state.profiles.Carlos.settings,...old.settings};
     state.profiles.Cris.settings={...state.profiles.Cris.settings,...old.settings};
     delete state.week;delete state.history;delete state.freezer;delete state.settings;
   }
   state.profiles.Carlos=state.profiles.Carlos||makeProfile({});
-  state.profiles.Cris=state.profiles.Cris||makeProfile(state.profiles.Carlos);
+  state.profiles.Cris=state.profiles.Cris||makeProfile({});
   state.recipes=Array.isArray(state.recipes)?state.recipes:[];
   state.foods=Array.isArray(state.foods)&&state.foods.length?state.foods:SEED.slice();
   state.sports=Array.isArray(state.sports)&&state.sports.length?state.sports:clone(defaultSports);
   state.activeProfile=state.activeProfile==="Cris"?"Cris":"Carlos";
 }
-state.version=7.2;
+state.version=7.3;
 function normalizeProfile(p){p=p||makeProfile({});p.week=p.week&&typeof p.week==="object"?p.week:{};p.history=Array.isArray(p.history)?p.history:[];p.freezer=Array.isArray(p.freezer)?p.freezer:[];p.settings={budget:22,bank:0,bankUsed:0,weekKey:null,weekBankStart:0,bankUse:[0,0,0,0,0,0,0],...(p.settings||{})};p.settings.bankUse=Array.isArray(p.settings.bankUse)?p.settings.bankUse:[0,0,0,0,0,0,0];return p}
 state.profiles.Carlos=normalizeProfile(state.profiles.Carlos);state.profiles.Cris=normalizeProfile(state.profiles.Cris);
 let activeProfile=state.activeProfile||"Carlos";
 let profile=state.profiles[activeProfile];
 let recipes=state.recipes,week=profile.week,menuHistory=profile.history,freezer=profile.freezer,foods=state.foods,sports=state.sports,settings=profile.settings;
+function ensureFoodIdsAndRecipeLinks(){
+  const used=new Set();
+  foods.forEach((f,i)=>{
+    if(!f.id || f.id==="undefined" || f.id==="null" || used.has(f.id)){
+      const base="food-"+norm(f.name).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"item";
+      let id=base, n=2; while(used.has(id)) id=base+"-"+(n++); f.id=id;
+    }
+    used.add(f.id);
+  });
+  recipes.forEach(r=>{
+    r.ingredients=Array.isArray(r.ingredients)?r.ingredients.map(i=>{
+      let f=foods.find(x=>x.id===i.foodId);
+      if(!f && i.name) f=foods.find(x=>norm(x.name)===norm(i.name));
+      return {...i,foodId:f?.id||i.foodId||null,name:f?.name||i.name||""};
+    }):[];
+  });
+}
+ensureFoodIdsAndRecipeLinks();
 let supabaseClient=null,cloudUser=null,pkey="";
 function save(){
   // Mantiene sincronizadas las variables del perfil activo con el estado persistente.
@@ -185,15 +202,8 @@ function save(){
   localStorage.setItem("menu6",JSON.stringify(state));
   if(supabaseClient&&cloudUser) pushCloud();
 }
-function selectProfile(name,copyIfNew=true){
+function selectProfile(name){
   name=name==="Cris"?"Cris":"Carlos";
-  if(name!=="Carlos"&&copyIfNew){
-    const ck=currentWeekKey();
-    if(!state.profiles.Cris.weekKeyForCopy||state.profiles.Cris.weekKeyForCopy!==ck){
-      state.profiles.Cris.week=clone(state.profiles.Carlos.week||{});
-      state.profiles.Cris.weekKeyForCopy=ck;
-    }
-  }
   activeProfile=name;state.activeProfile=name;profile=state.profiles[name];
   week=profile.week;menuHistory=profile.history;freezer=profile.freezer;settings=profile.settings;
   profileName.textContent=name;pointsProfileName.textContent=name;
@@ -236,18 +246,34 @@ function addUSDAFood(f){
   if(foods.some(x=>x.source==="USDA FoodData Central"&&x.fdcId===f.fdcId)){alert("Ese alimento ya está en tu base.");return}
   f.id="usda-"+f.fdcId;foods.push(f);save();renderFoods();alert("Alimento añadido a tu base.");
 }
-function renderFoods(){let q=norm(foodSearch.value),cat=foodCat.value;let a=foods.filter(f=>(!cat||f.cat===cat)&&(!q||norm(f.name).includes(q))).sort((x,y)=>alpha(x.cat,y.cat)||alpha(x.name,y.name));foodsList.innerHTML=a.map(f=>`<div class="card"><span class="tag">${esc(f.cat)}</span><h3>${esc(f.name)}</h3><p class="muted">${f.kcal} kcal · ${f.fat} g grasa · ${f.fiber} g fibra /100g</p><p><b>${foodPoints100(f)} pt/100g</b></p><button onclick="editFood('${f.id}')">Editar</button></div>`).join("")||"<div class='card'>No hay alimentos con ese filtro.</div>"}
-function openFoodEditor(){fid.value="";fcat.value=FOODC[0];fn.value="";fk.value="";ff.value="";ffi.value="";fd.value="1";fu.value="";ft.textContent="Nuevo alimento";foodModal.classList.add("show")}
-function editFood(id){let f=foods.find(a=>a.id===id);if(!f)return;fid.value=f.id;fcat.value=f.cat;fn.value=f.name;fk.value=f.kcal;ff.value=f.fat;ffi.value=f.fiber;fd.value=f.density||1;fu.value=f.unitg||"";ft.textContent="Editar alimento";foodModal.classList.add("show")}
-function saveFood(){if(!fn.value.trim())return alert("Falta el nombre.");let f={id:fid.value||crypto.randomUUID(),cat:fcat.value,name:fn.value.trim(),kcal:+fk.value||0,fat:+ff.value||0,fiber:+ffi.value||0,density:+fd.value||1,unitg:+fu.value||null,source:"user"};let i=foods.findIndex(a=>a.id===f.id);i<0?foods.push(f):foods[i]=f;save();closeFood();renderFoods()}
+function renderFoods(){let q=norm(foodSearch.value),cat=foodCat.value;let a=foods.filter(f=>(!cat||f.cat===cat)&&(!q||norm(f.name).includes(q))).sort((x,y)=>alpha(x.cat,y.cat)||alpha(x.name,y.name));foodsList.innerHTML=a.map(f=>`<div class="card"><span class="tag">${esc(f.cat)}</span><h3>${esc(f.name)}</h3><p class="muted">${f.kcal} kcal · ${f.fat} g grasa · ${f.fiber} g fibra /100g</p><p><b>${foodPoints100(f)} pt/100g${f.wwPoints100!=null?' · ✏️ asignados':''}</b></p><button onclick="editFood('${f.id}')">Editar</button></div>`).join("")||"<div class='card'>No hay alimentos con ese filtro.</div>"}
+function openFoodEditor(){fid.value="";fcat.value=FOODC[0];fn.value="";fk.value="";ff.value="";ffi.value="";fd.value="1";fu.value="";fw.value="";ft.textContent="Nuevo alimento";foodModal.classList.add("show")}
+function editFood(id){let f=foods.find(a=>a.id===id);if(!f)return;fid.value=f.id;fcat.value=f.cat;fn.value=f.name;fk.value=f.kcal;ff.value=f.fat;ffi.value=f.fiber;fd.value=f.density||1;fu.value=f.unitg||"";fw.value=f.wwPoints100??"";ft.textContent="Editar alimento";foodModal.classList.add("show")}
+function saveFood(){if(!fn.value.trim())return alert("Falta el nombre.");let raw=fw.value.trim();let f={id:fid.value||crypto.randomUUID(),cat:fcat.value,name:fn.value.trim(),kcal:+fk.value||0,fat:+ff.value||0,fiber:+ffi.value||0,density:+fd.value||1,unitg:+fu.value||null,wwPoints100:raw===""?null:Math.max(0,Math.round(+raw||0)),source:"user"};let i=foods.findIndex(a=>a.id===f.id);i<0?foods.push(f):foods[i]=f;save();closeFood();renderFoods();renderRecipes();renderWeek();points()}
 function closeFood(){foodModal.classList.remove("show")}
-function foodPoints100(f){return Math.max(0,Math.round(f.kcal/50+f.fat/12-Math.min(f.fiber,4)/5))}
+function foodPointsRaw100(f){if(f.wwPoints100!=null)return Math.max(0,+f.wwPoints100||0);return Math.max(0,f.kcal/50+f.fat/12-Math.min(f.fiber,4)/5)}
+function foodPoints100(f){return Math.max(0,Math.round(foodPointsRaw100(f)))}
 function foodGrams(i,f){let q=+i.qty||0,u=i.unit||"g";if(u==="kg")return q*1000;if(u==="ml")return q*(f.density||1);if(u==="l")return q*1000*(f.density||1);if(u==="unidades")return q*(f.unitg||100);if(u==="docenas")return q*12*(f.unitg||100);return q}
-function ingredientNutrition(i){let f=foods.find(a=>a.id===i.foodId);if(!f)return null;let g=foodGrams(i,f),factor=g/100;return {f,g,kcal:f.kcal*factor,fat:f.fat*factor,fiber:f.fiber*factor}}
-function recipePoints(r){let kcal=0,fat=0,fiber=0;(r.ingredients||[]).forEach(i=>{let n=ingredientNutrition(i);if(n){kcal+=n.kcal/r.people;fat+=n.fat/r.people;fiber+=n.fiber/r.people}});return Math.max(0,Math.round(kcal/50+fat/12-Math.min(fiber,4)/5))}
+function ingredientNutrition(i){let f=foods.find(a=>a.id===i.foodId);if(!f)return null;let g=foodGrams(i,f),factor=g/100;return {f,g,kcal:f.kcal*factor,fat:f.fat*factor,fiber:f.fiber*factor,wwPoints:foodPointsRaw100(f)*factor}}
+function recipePoints(r){let kcal=0,fat=0,fiber=0,override=0,hasOverride=false;(r.ingredients||[]).forEach(i=>{let n=ingredientNutrition(i);if(!n)return;if(n.f.wwPoints100!=null){hasOverride=true;override+=n.wwPoints/r.people}else{kcal+=n.kcal/r.people;fat+=n.fat/r.people;fiber+=n.fiber/r.people}});let auto=kcal/50+fat/12-Math.min(fiber,4)/5;return Math.max(0,Math.round(override+auto))}
 function editRecipe(id){let r=recipes.find(a=>a.id===id);rid.value=r?.id||"";rn.value=r?.name||"";rtype.innerHTML=MEALC.map(t=>`<option>${t}</option>`).join("");rtype.value=r?.type||"Guisos";rp.value=r?.people||4;ings.innerHTML="";(r?.ingredients?.length?r.ingredients:[{}]).forEach(addIng);steps.value=r?.steps||"";rt.textContent=r?"Editar receta":"Nueva receta";recipeModal.classList.add("show")}
-function addIng(a={}){let e=document.createElement("div");e.className="ing";let opts=foods.slice().sort((x,y)=>alpha(x.cat,y.cat)||alpha(x.name,y.name)).map(f=>`<option value="${f.id}">${esc(f.cat)} · ${esc(f.name)}</option>`).join("");e.innerHTML=`<select class="if">${opts}</select><input class="iq" type="number" step=".01" value="${a.qty??""}" placeholder="Cantidad"><select class="iu"><option>g</option><option>kg</option><option>ml</option><option>l</option><option>unidades</option><option>docenas</option></select><button onclick="this.parentElement.remove()">×</button>`;ings.appendChild(e);if(a.foodId)e.querySelector(".if").value=a.foodId;e.querySelector(".iu").value=a.unit||"g"}
-function saveRecipe(){let ing=[...document.querySelectorAll(".ing")].map(e=>({foodId:e.querySelector(".if").value,qty:+e.querySelector(".iq").value,unit:e.querySelector(".iu").value})).filter(a=>a.foodId&&a.qty>0);if(!rn.value||!ing.length)return alert("Falta nombre o ingredientes.");let r={id:rid.value||crypto.randomUUID(),name:rn.value.trim(),type:rtype.value,people:+rp.value||1,ingredients:ing,steps:steps.value};let i=recipes.findIndex(a=>a.id===r.id);i<0?recipes.push(r):recipes[i]=r;save();closeM();renderRecipes();renderWeek();shopping()}
+function addIng(a={}){
+  let e=document.createElement("div");e.className="ing";
+  let current=foods.find(f=>f.id===a.foodId)||(a.name?foods.find(f=>norm(f.name)===norm(a.name)):null);
+  let opts=foods.slice().sort((x,y)=>alpha(x.cat,y.cat)||alpha(x.name,y.name)).map(f=>`<option value="${esc(f.id)}">${esc(f.cat)} · ${esc(f.name)}</option>`).join("");
+  if(a.foodId&&!current) opts=`<option value="">⚠️ Ingrediente no identificado: ${esc(a.name||a.foodId)}</option>`+opts;
+  e.innerHTML=`<select class="if">${opts}</select><input class="iq" type="number" step=".01" value="${a.qty??""}" placeholder="Cantidad"><select class="iu"><option>g</option><option>kg</option><option>ml</option><option>l</option><option>unidades</option><option>docenas</option></select><button onclick="this.parentElement.remove()">×</button>`;
+  ings.appendChild(e);
+  if(current)e.querySelector(".if").value=current.id;
+  e.querySelector(".iu").value=a.unit||"g";
+}
+function saveRecipe(){
+  let ing=[...document.querySelectorAll(".ing")].map(e=>{let foodId=e.querySelector(".if").value;let f=foods.find(x=>x.id===foodId);return {foodId,name:f?.name||"",qty:+e.querySelector(".iq").value,unit:e.querySelector(".iu").value}}).filter(a=>a.foodId&&a.qty>0);
+  if(!rn.value||!ing.length)return alert("Falta nombre o ingredientes.");
+  let r={id:rid.value||crypto.randomUUID(),name:rn.value.trim(),type:rtype.value,people:+rp.value||1,ingredients:ing,steps:steps.value};
+  let i=recipes.findIndex(a=>a.id===r.id);i<0?recipes.push(r):recipes[i]=r;
+  save();closeM();renderRecipes();renderWeek();shopping();
+}
 function closeM(){recipeModal.classList.remove("show")}
 function renderRecipes(){let q=norm(search.value),cat=recipeCat.value;let a=recipes.filter(r=>(!cat||r.type===cat)&&(!q||norm(r.name).includes(q))).sort((x,y)=>alpha(x.type,y.type)||alpha(x.name,y.name));recipesList.innerHTML=a.map(r=>`<div class="card"><span class="tag">${esc(r.type)}</span><h3>${esc(r.name)}</h3><p class="muted">${r.people} personas · ${r.ingredients.length} ingredientes</p><p><b>${recipePoints(r)} puntos por persona</b></p><button onclick="editRecipe('${r.id}')">Editar</button> <button onclick="addFrozen('${r.id}')">❄️ Congelar</button></div>`).join("")||"<div class='card'>No hay recetas.</div>"}
 function assignOpen(k){pkey=k;let [di,si]=k.split("_");if(+si===7){assignTitle.textContent="Asignar deporte";ai.innerHTML=D[di]+" · Deporte";as.innerHTML="<option value=''>— Sin deporte —</option>"+sports.slice().sort((a,b)=>alpha(a.cat,b.cat)||alpha(a.name,b.name)).map(s=>`<option value="${s.id}">${esc(s.cat)} · ${esc(s.name)}</option>`).join("");let sv=week[k],sidv=typeof sv==="object"?sv.sportId:sv;as.value=sidv||"";ai.insertAdjacentHTML("afterend",`<label id="sportMinLabel">Duración (minutos)</label><input id="sportMinutes" type="number" min="1" step="1" value="${typeof sv==="object"?sv.minutes:30}">`)}else{assignTitle.textContent="Asignar receta";ai.textContent=D[di]+" · "+S[si];let allowed=si==3?recipes.filter(r=>r.type===MAINC[+di]):recipes;as.innerHTML="<option value=''>— Vacío —</option>"+allowed.slice().sort((a,b)=>alpha(a.type,b.type)||alpha(a.name,b.name)).map(r=>`<option value="${r.id}">${esc(r.type)} · ${esc(r.name)}</option>`).join("");as.value=week[k]||""}assignModal.classList.add("show")}
@@ -329,7 +355,7 @@ function renderSports(){let q=norm(sportSearch.value),a=sports.filter(s=>!q||nor
 function editSport(id){let s=sports.find(a=>a.id===id);sid.value=s?.id||"";sn.value=s?.name||"";scat.value=s?.cat||"Cardio";sp.value=s?.points30??2;st.textContent=s?"Editar actividad":"Nueva actividad";sportModal.classList.add("show")}
 function saveSport(){if(!sn.value.trim())return;let s={id:sid.value||crypto.randomUUID(),name:sn.value.trim(),cat:scat.value,points30:+sp.value||0};let i=sports.findIndex(a=>a.id===s.id);i<0?sports.push(s):sports[i]=s;save();closeSport();renderSports();renderWeek()}
 function closeSport(){sportModal.classList.remove("show")}
-function cloudPayload(){return {version:7,recipes:state.recipes,foods:state.foods,sports:state.sports,profiles:state.profiles,activeProfile:state.activeProfile}}
+function cloudPayload(){return {version:7.3,recipes:state.recipes,foods:state.foods,sports:state.sports,profiles:state.profiles,activeProfile:state.activeProfile}}
 function connectCloud(){let url=surl.value.trim(),key=skey.value.trim();if(!url||!key){cloudMsg.textContent="Falta la URL o la clave pública.";return}localStorage.setItem("supabase_url",url);localStorage.setItem("supabase_key",key);try{supabaseClient=supabase.createClient(url,key);cloudMsg.textContent="Conexión preparada. Ahora inicia sesión o sincroniza."}catch(e){cloudMsg.textContent="No se pudo preparar la conexión: "+e.message}}
 async function signUpCloud(){if(!supabaseClient){connectCloud();if(!supabaseClient)return}let e=email.value.trim(),p=password.value;if(!e||!p){authMsg.textContent="Escribe correo y contraseña.";return}let {data,error}=await supabaseClient.auth.signUp({email:e,password:p});if(error){authMsg.textContent="Error: "+error.message;return}cloudUser=data.user;authMsg.textContent=data.session?"Cuenta creada y sesión iniciada.":"Cuenta creada. Confirma el correo y después inicia sesión.";if(data.session)await syncNow()}
 async function signInCloud(){if(!supabaseClient){connectCloud();if(!supabaseClient)return}let e=email.value.trim(),p=password.value;if(!e||!p){authMsg.textContent="Escribe correo y contraseña.";return}let {data,error}=await supabaseClient.auth.signInWithPassword({email:e,password:p});if(error){authMsg.textContent="Error: "+error.message;return}cloudUser=data.user;authMsg.textContent="Sesión iniciada: "+cloudUser.email;await syncNow()}
@@ -342,6 +368,6 @@ function importData(e){let f=e.target.files[0],r=new FileReader();r.onload=()=>{
 function renderAll(){populateCats();renderWeek();renderFoods();renderRecipes();renderHistory();renderFreezer();renderSports();shopping();points()}
 document.body.insertAdjacentHTML("beforeend",`<div id="freezerModal" class="modal"><div class="box"><h2>Añadir congelado</h2><label>Receta</label><select id="frecipe"></select><label>Número de tuppers</label><input id="fcount" type="number" value="1"><label>Comensales por tupper</label><input id="fservings" type="number" value="1"><div class="row" style="margin-top:10px"><button class="primary" onclick="saveFrozen()">Guardar</button><button onclick="closeFrozen()">Cancelar</button></div></div></div>`);
 freezerModal=$("freezerModal");frecipe=$("frecipe");fcount=$("fcount");fservings=$("fservings");
-try{populateCats();profileName.textContent=activeProfile;pointsProfileName.textContent=activeProfile;renderAll();initCloud();}catch(e){console.error(e);document.body.insertAdjacentHTML("beforeend",`<div style="position:fixed;left:10px;right:10px;bottom:10px;background:#fee2e2;color:#991b1b;padding:12px;border-radius:10px;z-index:9999"><b>Error de la aplicación:</b> ${esc(e&&e.message||e)}</div>`);}
+try{populateCats();profileName.textContent=activeProfile;pointsProfileName.textContent=activeProfile;save();renderAll();initCloud();}catch(e){console.error(e);document.body.insertAdjacentHTML("beforeend",`<div style="position:fixed;left:10px;right:10px;bottom:10px;background:#fee2e2;color:#991b1b;padding:12px;border-radius:10px;z-index:9999"><b>Error de la aplicación:</b> ${esc(e&&e.message||e)}</div>`);}
 </script>
 </body></html>
