@@ -6,12 +6,12 @@
 <meta name="theme-color" content="#18212f">
 <link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<title>Mi Menú V7</title>
+<title>Mi Menú V7.2</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#20242a;font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 header{background:#18212f;color:#fff;padding:16px 14px}header h1{margin:0}header p{margin:4px 0;color:#cbd5e1;font-size:12px}
-nav{display:flex;gap:6px;padding:8px;background:#fff;overflow:auto;position:sticky;top:0;z-index:4}nav button{border:0;border-radius:9px;padding:10px;background:#eef2f7;font-weight:700;white-space:nowrap}nav button.on{background:#2563eb;color:#fff}
-main{max-width:1400px;margin:14px auto;padding:0 10px}.view{display:none}.view.on{display:block}.card{background:#fff;border:1px solid #e2e6eb;border-radius:14px;padding:14px;margin-bottom:10px}
+nav{display:none}nav button{display:none}nav button{border:0;border-radius:9px;padding:10px;background:#eef2f7;font-weight:700;white-space:nowrap}nav button.on{background:#2563eb;color:#fff}
+main{max-width:1400px;margin:0 auto;padding:14px 10px}.home{max-width:1100px;margin:0 auto}.homeHero{background:linear-gradient(135deg,#18212f,#29466f);color:#fff;border-radius:22px;padding:24px;margin-bottom:16px;box-shadow:0 10px 30px #18212f22}.homeHero h2{margin:0 0 6px;font-size:28px}.homeHero p{margin:0;color:#dbeafe}.homeGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.homeBtn{border:1px solid #e2e8f0;background:#fff;border-radius:18px;padding:18px;text-align:left;min-height:120px;box-shadow:0 4px 14px #18212f0d;transition:transform .12s,box-shadow .12s}.homeBtn:hover{transform:translateY(-2px);box-shadow:0 8px 22px #18212f18}.homeIcon{font-size:34px;display:block;margin-bottom:8px}.homeTitle{font-weight:800;font-size:17px}.homeSub{font-size:12px;color:#687385;margin-top:4px}.chooser{max-width:720px;margin:10px auto}.chooser h2{margin-top:0}.chooserGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.personBtn{border:0;border-radius:18px;padding:26px;background:#eef2f7;font-weight:800;font-size:20px;min-height:150px}.personBtn.carlos{background:#e8f1ff}.personBtn.cris{background:#fff0f6}.backHome{margin-bottom:10px}.tableWrap{overflow-x:auto;width:100%}.view{display:none}.view.on{display:block}.card{background:#fff;border:1px solid #e2e6eb;border-radius:14px;padding:14px;margin-bottom:10px}
 button{cursor:pointer}.primary{background:#2563eb;color:#fff;border:0;border-radius:9px;padding:10px 12px;font-weight:700}.danger{background:#fee2e2;color:#b91c1c;border:0;border-radius:9px;padding:10px 12px;font-weight:700}
 input,select,textarea{width:100%;padding:9px;border:1px solid #cbd5e1;border-radius:9px;font:inherit}label{font-size:12px;font-weight:700;display:block;margin:8px 0 4px}
 .row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.muted{color:#687385;font-size:13px}.tag{background:#eff6ff;color:#1d4ed8;padding:4px 8px;border-radius:99px;font-size:11px;font-weight:700}
@@ -22,38 +22,61 @@ input,select,textarea{width:100%;padding:9px;border:1px solid #cbd5e1;border-rad
 table{border-collapse:collapse;width:100%}th,td{padding:7px;border-bottom:1px solid #edf0f2;text-align:right}th:first-child,td:first-child{text-align:left}
 .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.kpi>div{background:#f8fafc;border-radius:10px;padding:10px}.big{font-size:22px;font-weight:800}
 .ok{color:#15803d}.warn{color:#b45309}.bad{color:#b91c1c}
-@media(max-width:700px){.kpi{grid-template-columns:repeat(2,1fr)}.ing{grid-template-columns:1fr 75px 90px 40px}}
+@media(max-width:700px){header{padding:14px 12px}header h1{font-size:22px}.homeHero{padding:18px;border-radius:18px}.homeHero h2{font-size:23px}.homeGrid{grid-template-columns:repeat(2,1fr);gap:9px}.homeBtn{min-height:108px;padding:14px;border-radius:15px}.homeIcon{font-size:29px}.homeTitle{font-size:15px}.homeSub{font-size:11px}.chooserGrid{grid-template-columns:1fr}.personBtn{min-height:110px}.kpi{grid-template-columns:repeat(2,1fr)}.ing{grid-template-columns:1fr 75px 90px 40px}table{min-width:760px}}
 </style>
 </head>
 <body>
-<header><h1>🍲 Mi Menú</h1><p>V7 · Carlos y Cris · menú · alimentos · recetas · deporte · puntos clásicos</p></header>
+<header><h1>🍲 Mi Menú</h1><p>V7.2 · Carlos y Cris · tu menú, tus puntos y todo en un solo lugar</p></header>
 <nav id="nav"><button data-tab="weekCarlos">📅 Semana Carlos</button><button data-tab="weekCris">📅 Semana Cris</button><button data-tab="foods">🥕 Alimentos</button><button data-tab="recipes">📚 Recetas</button><button data-tab="freezer">❄️ Congelador</button><button data-tab="history">🗂️ Semanas</button><button data-tab="shopping">🛒 Compra</button><button data-tab="sport">🏃 Deporte</button><button data-tab="pointsCarlos">🎯 Puntos Carlos</button><button data-tab="pointsCris">🎯 Puntos Cris</button><button data-tab="settings">⚙️ Datos</button></nav>
 <main>
-<section id="week" class="view on">
+<section id="home" class="view on home">
+ <div class="homeHero"><h2>🍽️ Mi Menú</h2><p>Elige qué quieres hacer. Todo está organizado para que resulte cómodo también desde el móvil.</p></div>
+ <div class="homeGrid">
+  <button class="homeBtn" onclick="show('chooseWeek')"><span class="homeIcon">📅</span><span class="homeTitle">Semana</span><span class="homeSub">Planifica tu semana</span></button>
+  <button class="homeBtn" onclick="show('choosePoints')"><span class="homeIcon">🎯</span><span class="homeTitle">Puntos</span><span class="homeSub">Consulta tu saldo diario</span></button>
+  <button class="homeBtn" onclick="show('foods')"><span class="homeIcon">🥕</span><span class="homeTitle">Alimentos</span><span class="homeSub">Base nutricional</span></button>
+  <button class="homeBtn" onclick="show('recipes')"><span class="homeIcon">📚</span><span class="homeTitle">Recetas</span><span class="homeSub">Tus recetas y platos</span></button>
+  <button class="homeBtn" onclick="show('freezer')"><span class="homeIcon">❄️</span><span class="homeTitle">Congelador</span><span class="homeSub">Tuppers y raciones</span></button>
+  <button class="homeBtn" onclick="show('history')"><span class="homeIcon">🗂️</span><span class="homeTitle">Semanas</span><span class="homeSub">Semanas guardadas</span></button>
+  <button class="homeBtn" onclick="show('shopping')"><span class="homeIcon">🛒</span><span class="homeTitle">Compra</span><span class="homeSub">Lista de la compra</span></button>
+  <button class="homeBtn" onclick="show('sport')"><span class="homeIcon">🏃</span><span class="homeTitle">Deporte</span><span class="homeSub">Actividad y bonus</span></button>
+  <button class="homeBtn" onclick="show('settings')"><span class="homeIcon">⚙️</span><span class="homeTitle">Datos</span><span class="homeSub">Nube y copias</span></button>
+ </div>
+</section>
+<section id="chooseWeek" class="view chooser">
+ <button class="backHome" onclick="show('home')">← Inicio</button>
+ <div class="card"><h2>📅 ¿De quién quieres ver la semana?</h2><p class="muted">La semana de Cris parte automáticamente de la de Carlos, pero después puede modificarse de forma independiente.</p><div class="chooserGrid"><button class="personBtn carlos" onclick="show('weekCarlos')">👤<br>Semana Carlos</button><button class="personBtn cris" onclick="show('weekCris')">👧<br>Semana Cris</button></div></div>
+</section>
+<section id="choosePoints" class="view chooser">
+ <button class="backHome" onclick="show('home')">← Inicio</button>
+ <div class="card"><h2>🎯 ¿De quién quieres ver los puntos?</h2><p class="muted">Cada perfil tiene sus propios puntos, deporte, saldo y banco.</p><div class="chooserGrid"><button class="personBtn carlos" onclick="show('pointsCarlos')">👤<br>Puntos Carlos</button><button class="personBtn cris" onclick="show('pointsCris')">👧<br>Puntos Cris</button></div></div>
+</section>
+<section id="week" class="view">
+ <button class="backHome" onclick="show('home')">← Inicio</button>
  <div class="card"><div class="row"><b>Semana: <span id="profileName">Carlos</span> · sábado → viernes</b><span id="weekLabel" class="muted"></span><button class="primary" onclick="saveWeek()">💾 Guardar semana</button><button class="danger" onclick="clearWeek()">Vaciar</button></div></div>
  <div class="card week"><div id="days" class="days"></div></div>
  <div class="card" id="weekSummary"></div>
 </section>
 
-<section id="foods" class="view">
+<section id="foods" class="view"><button class="backHome" onclick="show('home')">← Inicio</button>
  <div class="card"><div class="row"><b>🥕 Base de alimentos</b><button class="primary" onclick="openFoodEditor()">+ Nuevo alimento</button></div>
  <p class="muted">Clasificados por naturaleza y orden alfabético. La aplicación calcula los puntos clásicos a partir de kcal, grasa y fibra por 100 g.</p></div>
  <div class="card"><div class="row"><select id="foodCat" onchange="renderFoods()"></select><input id="foodSearch" placeholder="Buscar alimento..." oninput="renderFoods()"><button onclick="searchUSDA()">🔎 Buscar base nutricional</button></div></div>
  <div id="foodsList" class="cards"></div>
 </section>
 
-<section id="recipes" class="view">
+<section id="recipes" class="view"><button class="backHome" onclick="show('home')">← Inicio</button>
  <div class="card"><div class="row"><b>📚 Recetas</b><button class="primary" onclick="editRecipe()">+ Nueva receta</button></div>
  <p class="muted">Clasificadas por naturaleza y alfabéticamente. Los ingredientes se seleccionan de la base de alimentos.</p></div>
  <div class="card"><div class="row"><select id="recipeCat" onchange="renderRecipes()"></select><input id="search" placeholder="Buscar receta..." oninput="renderRecipes()"></div></div>
  <div id="recipesList" class="cards"></div>
 </section>
 
-<section id="freezer" class="view"><div class="card"><div class="row"><b>❄️ Congelador</b><button class="primary" onclick="addFrozen()">+ Añadir</button></div><p class="muted">Tuppers y raciones disponibles.</p></div><div id="freezerList" class="cards"></div></section>
-<section id="history" class="view"><div class="card"><b>🗂️ Semanas guardadas</b><p class="muted">Recupera semanas que hayan funcionado.</p></div><div id="historyList"></div></section>
-<section id="shopping" class="view"><div class="card"><b>🛒 Lista de la compra</b><p class="muted">Se calcula a partir de las raciones de una persona.</p><button class="primary" onclick="shopping()">Actualizar</button></div><div class="card"><ul id="shop" class="list"></ul></div></section>
+<section id="freezer" class="view"><button class="backHome" onclick="show('home')">← Inicio</button><div class="card"><div class="row"><b>❄️ Congelador</b><button class="primary" onclick="addFrozen()">+ Añadir</button></div><p class="muted">Tuppers y raciones disponibles.</p></div><div id="freezerList" class="cards"></div></section>
+<section id="history" class="view"><button class="backHome" onclick="show('home')">← Inicio</button><div class="card"><b>🗂️ Semanas guardadas</b><p class="muted">Recupera semanas que hayan funcionado.</p></div><div id="historyList"></div></section>
+<section id="shopping" class="view"><button class="backHome" onclick="show('home')">← Inicio</button><div class="card"><b>🛒 Lista de la compra</b><p class="muted">Se calcula a partir de las raciones de una persona.</p><button class="primary" onclick="shopping()">Actualizar</button></div><div class="card"><ul id="shop" class="list"></ul></div></section>
 
-<section id="sport" class="view">
+<section id="sport" class="view"><button class="backHome" onclick="show('home')">← Inicio</button>
  <div class="card"><div class="row"><b>🏃 Deporte</b><button class="primary" onclick="editSport()">+ Nueva actividad</button></div>
  <p class="muted">Cada actividad tiene un bonus de puntos configurable. El bonus se aplica al día y no se incorpora al banco.</p></div>
  <div class="card"><input id="sportSearch" placeholder="Buscar deporte..." oninput="renderSports()"></div>
@@ -61,6 +84,7 @@ table{border-collapse:collapse;width:100%}th,td{padding:7px;border-bottom:1px so
 </section>
 
 <section id="points" class="view">
+ <button class="backHome" onclick="show('home')">← Inicio</button>
  <div class="card"><b>🎯 Puntos WW clásicos · <span id="pointsProfileName">Carlos</span></b>
  <div class="kpi">
   <div><div class="muted">Puntos diarios</div><div class="big" id="budgetKpi">0</div></div>
@@ -74,7 +98,7 @@ table{border-collapse:collapse;width:100%}th,td{padding:7px;border-bottom:1px so
  <div class="card" id="pointsTable"></div>
 </section>
 
-<section id="settings" class="view">
+<section id="settings" class="view"><button class="backHome" onclick="show('home')">← Inicio</button>
  <div class="card"><b>☁️ Sincronización</b><p class="muted">La V6 mantiene la conexión Supabase de la V5.</p>
  <label>Supabase URL</label><input id="surl" autocomplete="off"><label>Supabase anon key / publishable key</label><input id="skey" type="password" autocomplete="off"><button class="primary" onclick="connectCloud()">Guardar y conectar</button><p id="cloudMsg" class="muted"></p>
  <hr><b>👤 Cuenta</b><label>Correo electrónico</label><input id="email" type="email" autocomplete="email"><label>Contraseña</label><input id="password" type="password" autocomplete="current-password">
@@ -140,7 +164,7 @@ if(!state){
   state.sports=Array.isArray(state.sports)&&state.sports.length?state.sports:clone(defaultSports);
   state.activeProfile=state.activeProfile==="Cris"?"Cris":"Carlos";
 }
-state.version=7;
+state.version=7.2;
 function normalizeProfile(p){p=p||makeProfile({});p.week=p.week&&typeof p.week==="object"?p.week:{};p.history=Array.isArray(p.history)?p.history:[];p.freezer=Array.isArray(p.freezer)?p.freezer:[];p.settings={budget:22,bank:0,bankUsed:0,weekKey:null,weekBankStart:0,bankUse:[0,0,0,0,0,0,0],...(p.settings||{})};p.settings.bankUse=Array.isArray(p.settings.bankUse)?p.settings.bankUse:[0,0,0,0,0,0,0];return p}
 state.profiles.Carlos=normalizeProfile(state.profiles.Carlos);state.profiles.Cris=normalizeProfile(state.profiles.Cris);
 let activeProfile=state.activeProfile||"Carlos";
@@ -179,7 +203,7 @@ function esc(a){return String(a??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt
 function norm(a){return String(a||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()}
 function alpha(a,b){return String(a).localeCompare(String(b),"es",{sensitivity:"base"})}
 nav.querySelectorAll("button[data-tab]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.tab)));
-function show(id){let base=id;if(id==="weekCarlos"||id==="pointsCarlos"){selectProfile("Carlos");base=id.startsWith("week")?"week":"points"}else if(id==="weekCris"||id==="pointsCris"){selectProfile("Cris");base=id.startsWith("week")?"week":"points"}document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===base));nav.querySelectorAll("button[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===id));if(base==="shopping")shopping();if(base==="points")points();if(base==="freezer")renderFreezer();if(base==="history")renderHistory();if(base==="foods")renderFoods();if(base==="recipes")renderRecipes();if(base==="sport")renderSports()}
+function show(id){let base=id;if(id==="weekCarlos"||id==="pointsCarlos"){selectProfile("Carlos");base=id.startsWith("week")?"week":"points"}else if(id==="weekCris"||id==="pointsCris"){selectProfile("Cris");base=id.startsWith("week")?"week":"points"}document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===base));nav.querySelectorAll("button[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===id));if(base==="shopping")shopping();if(base==="points")points();if(base==="freezer")renderFreezer();if(base==="history")renderHistory();if(base==="foods")renderFoods();if(base==="recipes")renderRecipes();if(base==="sport")renderSports();window.scrollTo(0,0)}
 function currentWeekKey(){let now=new Date(),day=now.getDay();let diff=(day===6)?0:day+1;let d=new Date(now);d.setHours(0,0,0,0);d.setDate(d.getDate()-diff);return d.toISOString().slice(0,10)}
 function weekDates(){let k=currentWeekKey(),d=new Date(k+"T00:00:00");return D.map((_,i)=>{let x=new Date(d);x.setDate(d.getDate()+i);return x})}
 function renderWeek(){let dates=weekDates();weekLabel.textContent=dates[0].toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit"})+" → "+dates[6].toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"});
@@ -297,7 +321,7 @@ function points(){
     let saved=Math.max(0,Math.min(4,balance));
     return `<tr><td><b>${d}</b></td><td>${Math.round(settings.budget)}</td><td>${Math.round(sport)}</td><td><input type="number" min="0" max="10" step="1" value="${use}" onchange="setBankUse(${di},this.value)" style="width:70px"></td><td>${Math.round(partial)}</td><td>${Math.round(food)}</td><td class="${balance>=0?'ok':'bad'}">${Math.round(balance)}</td><td>${Math.round(saved)}</td></tr>`
   }).join("");
-  pointsTable.innerHTML=`<table><tr><th>Día</th><th>Permitidos</th><th>Deporte</th><th>Banco usado</th><th>Disponible parcial</th><th>Consumidos</th><th>Saldo</th><th>Ahorro</th></tr>${rows}</table>
+  pointsTable.innerHTML=`<div class="tableWrap"><table><tr><th>Día</th><th>Permitidos</th><th>Deporte</th><th>Banco usado</th><th>Disponible parcial</th><th>Consumidos</th><th>Saldo</th><th>Ahorro</th></tr>${rows}</table></div>
   <p class="muted">“Disponible parcial” suma los puntos diarios permitidos, el bonus de deporte y los puntos del banco usados ese día, antes de enfrentarlos a los consumidos. Banco: máximo 15 puntos acumulados; ahorro máximo 4 al día; gasto máximo 10 por semana sábado → viernes; el banco sobrante se arrastra.</p>`;
   renderWeek();
 }
